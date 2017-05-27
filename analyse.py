@@ -1,197 +1,231 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
+from timeit import timeit as timeit
 
-path = 'ch02/usagov_bitly_data2012-03-16-1331923249.txt'
+import numpy as np
+from numpy.matlib import randn
 
-# print open(path).readline()
-import json
-records = [json.loads(line) for line in open(path)]
-# print records[0]
-# print records[0]['tz']
-# time_zones = [rec['tz'] for rec in records]
-time_zones = [rec['tz'] for rec in records if 'tz' in rec]
-# print time_zones[:10]
-def get_counts(sequence):
-    counts = {}
-    for x in sequence:
-        if x in counts:
-            counts[x] += 1
-        else:
-            counts[x] = 1
-    return counts
-
-from collections import defaultdict
-
-def get_counts2(sequence):
-    counts = defaultdict(int)
-    for x in sequence:
-        counts[x] += 1
-    return counts
-
-counts = get_counts(time_zones)
-# print counts['America/New_York']
-# print len(time_zones)
-def top_counts(count_dict, n=10):
-    value_key_pairs = [(count, tz) for tz, count in count_dict.items()]
-    value_key_pairs.sort()
-    return value_key_pairs[-n:]
-# print top_counts(counts)
-from pandas import DataFrame, Series
-import pandas as pd; import numpy as np
-import matplotlib.pyplot as plt
-frame = DataFrame(records)
-# print frame
-# print frame['tz'][:10]
-tz_counts = frame['tz'].value_counts()
-# print tz_counts[:10]
-# tz_counts[:10].plot(kind='barh', rot=0)
-plt.show()
-# print frame['a'][1]
-# print frame['a'][50]
-# print frame['a'][51]
-results = Series([x.split()[0] for x in frame.a.dropna()])
-# print results[:5]
-# print results.value_counts()[:8]
-cframe = frame[frame.a.notnull()]
-operating_system = np.where(cframe['a'].str.contains('Window'), 'Windows', 'Not Windows')
-# print operating_system[:8]
-by_tz_os = cframe.groupby(['tz', operating_system])
-agg_counts = by_tz_os.size().unstack().fillna(0)
-# print agg_counts[:10]
-indexer = agg_counts.sum(1).argsort()
-# print indexer[:10]
-count_subset = agg_counts.take(indexer)[-10:]
-# print count_subset
-# count_subset.plot(kind='barh', stacked=True)
-normed_subset = count_subset.div(count_subset.sum(1), axis=0)
-# normed_subset.plot(kind='barh', stacked=True)
-# plt.show()
-unames = ['user_id', 'gender', 'age', 'occupation', 'zip']
-users = pd.read_table('ch02/movielens/users.dat', sep='::', header=None, names=unames, engine='python')
-
-rnames = ['user_id', 'movie_id', 'rating', 'timestamp']
-ratings = pd.read_table('ch02/movielens/ratings.dat', sep='::', header=None, names=rnames, engine='python')
-
-mnames = ['movie_id', 'title', 'genres']
-movies = pd.read_table('ch02/movielens/movies.dat', sep='::', header=None, names=mnames, engine='python')
-
-# print users[:5]
-# print ratings[:5]
-# print movies[:5]
-# print ratings
-data = pd.merge(pd.merge(ratings, users), movies)
+data1 = [6, 7.5, 8, 0, 1]
+arr1 = np.array(data1)
+# print arr1
+# print type(arr1)
+data2 = [[1, 2, 3, 4], [5, 6, 7, 8]]
+arr2 = np.array(data2)
+# print arr2
+# print arr2.ndim
+# print arr2.shape
+# print 'arr1数据类型:', arr1.dtype
+# print 'arr2数据类型:', arr2.dtype
+# print np.zeros(10)
+# print np.zeros((3, 6))
+# print np.empty((2, 3, 2))
+# print np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+arr1 = np.array([1, 2, 3], dtype=np.float64)
+arr2 = np.array([1, 2, 3], dtype=np.int32)
+# print arr1.dtype
+# print arr2.dtype
+arr = np.array([3.7, -1.2, -2.6, 0.5, 12.9, 10.1])
+# print arr
+# print arr.astype(np.int32)
+numeric_strings = np.array(['1.25', '-9.6', '42'], dtype=np.string_)
+# print numeric_strings
+# print numeric_strings.astype(float)
+int_array = np.arange(10)
+callables = np.array([.22, .270, .357, .380, .44, .50], dtype=np.float64)
+# print int_array.astype(callables.dtype)
+empty_uint32 = np.empty(8, dtype='u4')
+# print empty_uint32
+arr = np.array([[1., 2., 3.], [4., 5., 6.]])
+# print arr
+# print arr * arr
+# print arr - arr
+# print 1 / arr
+# print arr ** 0.5
+arr = np.arange(10)
+# print arr
+# print arr[5]
+# print arr[5:8]
+arr[5:8] = 12
+# print arr
+arr_slice = arr[5:8]
+arr_slice[1] = 12345
+# print arr
+arr_slice[:] = 64
+# print arr
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+# print arr2d
+# print arr2d[2]
+# print arr2d[0][2]
+# print arr2d[0, 2]
+arr3d = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+# print arr3d
+# print arr3d[0]
+old_values = arr3d[0].copy()
+arr3d[0] = 42
+# print arr3d
+arr3d[0] = old_values
+# print arr3d
+# print arr3d[1, 0]
+# print arr[1:6]
+# print arr2d
+# print arr2d[:2]
+# print arr2d[:2, 1:]
+# print arr2d[1, :2]
+# print arr2d[2, :1]
+# print arr2d[:, :1]
+arr2d[:2, 1:] = 0
+# print arr2d
+names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
+data = randn(7, 4)
+# print names
 # print data
-# print data.ix[0]
-mean_ratings = data.pivot_table('rating', index='title', columns='gender', aggfunc='mean')
-# pivot_table更改rows为index可以运行 cols改为columns
-# print mean_ratings[:5]
-ratings_by_title = data.groupby('title').size()
-# print ratings_by_title[:10]
-active_titles = ratings_by_title.index[ratings_by_title > 250]
-# print active_titles
-mean_ratings = mean_ratings.ix[active_titles]
-# print mean_ratings
-top_female_ratings = mean_ratings.sort_values(by='F', ascending=False)
-# print top_female_ratings[:10]
-mean_ratings['diff'] = mean_ratings['M'] - mean_ratings['F']
-sorted_by_diff = mean_ratings.sort_values(by='diff')
-# print sorted_by_diff[:15]
-# print sorted_by_diff[::-1][:15]
-rating_std_by_title = data.groupby('title')['rating'].std()
-rating_std_by_title = rating_std_by_title.ix[active_titles]
-# print rating_std_by_title.sort_values(ascending=False)[:10]
-# order替换为sort_values
-names1880 = pd.read_csv('ch02/names/yob1880.txt', names=['name', 'sex', 'births'])
-# print names1880
-# print names1880.groupby('sex').births.sum()
-years = range(1880, 2011)
-pieces = []
-columns = ['name', 'sex', 'births']
+# print names == 'Bob'
+# print data[names == 'Bob']
+# print data[names == 'Bob', 2:]
+# print data[names == 'Bob', 3]
+# print names != 'Bob'
+# print data[-(names == 'Bob')]
+mask = (names == 'Bob') | (names == 'Will')
+# print mask
+# print data[mask]
+# data[data < 0] = 0
+# print data
+data[names != 'Joe'] = 7
+# print data
+arr = np.empty((8, 4))
+for i in range(8):
+    arr[i] = i
+# print arr
+# print arr[[4, 3, 0, 6]]
+# print arr[[-3, -5, -7]]
+arr = np.arange(32).reshape((8, 4))
+# print arr
+# print arr[[1, 5, 7, 2]][:, [0, 3, 1, 2]]
+# print arr[np.ix_([1, 5, 7, 2], [0, 3, 1, 2])]
+arr = np.arange(15).reshape((3, 5))
+# print arr
+# print arr.T
+arr = np.random.randn(6, 3)
+# print np.dot(arr.T, arr)
+arr = np.arange(16).reshape((2, 2, 4))
+# print arr
+# print arr.transpose((1, 0, 2))
+# print arr.swapaxes(1, 2)
+arr = np.arange(10)
+# print np.sqrt(arr)
+# print np.exp(arr)
+x = randn(8)
+y = randn(8)
+# print x, y
+# print np.maximum(x, y)
+arr = randn(7) * 5
+# print arr
+# print np.modf(arr)
+points = np.arange(-5, 5, 0.01)
+xs, ys = np.meshgrid(points, points)
+# print ys
+z = np.sqrt(xs ** 2 + ys ** 2)
+# print z
+import matplotlib.pyplot as plt
+# plt.imshow(z, cmap=plt.cm.gray); plt.colorbar()
+# plt.title('Image plot of $\sqrt{x^2 + y^2}$ for a grid of values')
+# plt.show()
+xarr = np.array([1.1, 1.2, 1.3, 1.4, 1.5])
+yarr = np.array([2.1, 2.2, 2.3, 2.4, 2.5])
+cond = np.array([True, False, True, True, False])
+result = [(x if c else y)
+          for x, y, c in zip(xarr, yarr, cond)]
+# print result
+result = np.where(cond, xarr, yarr)
+# print result
+arr = randn(4, 4)
+# print arr
+# print np.where(arr > 0, 2, -2)
+# print np.where(arr > 0, 2, arr)
+arr = np.random.randn(5, 4)
+# print arr.mean()
+# print np.mean(arr)
+# print arr.sum()
+# print arr.mean(axis=1)
+# print arr.sum(0)
+arr = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+# print arr.cumsum(0)
+# print arr.cumprod(1)
+arr = randn(100)
+# print (arr > 0).sum()
+bools = np.array([False, False, True, False])
+# print bools.any()
+# print bools.all()
+arr = randn(8)
+# print arr
+arr.sort()
+# print arr
+arr = randn(5, 3)
+# print arr
+arr.sort(1)
+# print arr
+large_arr = randn(1000)
+large_arr.sort()
+# print len(large_arr)
+# print large_arr[int(0.05 * len(large_arr))]
+# print large_arr[int(0.05)]
+names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
+# print np.unique(names)
+ints = np.array([3, 3, 3, 2, 2, 1, 1, 4, 4])
+# print np.unique(ints)
+# print sorted(set(names))
+values = np.array([6, 0, 0, 3, 2, 5, 6])
+# print np.in1d(values, [2, 3, 6])
+arr = np.arange(10)
+np.save('some_array', arr)
+# print np.load('some_array.npy')
+np.savez('array_archive.npz', a=arr, b=arr)
+arch = np.load('array_archive.npz')
+# print arch['b']
+arr = np.loadtxt('ch04/array_ex.txt', delimiter=',')
+# print arr
+x = np.array([[1., 2., 3.], [4., 5., 6.]])
+y = np.array([[6., 23.], [-1, 7], [8, 9]])
+# print x, y
+# print x.dot(y)
+# print np.dot(x, np.ones(3))
+from numpy.linalg import inv, qr
+x =randn(5, 5)
+mat = x.T.dot(x)
+# print inv(mat)
+# print mat.dot(inv(mat))
+q, r = qr(mat)
+# print r
+samples = np.random.normal(size=(4, 4))
+# print samples
+import random
+position = 0
+walk = [position]
+steps = 1000
+for i in xrange(steps):
+    step = 1 if random.randint(0, 1) else -1
+    position += step
+    walk.append(position)
 
-for year in years:
-    path = 'ch02/names/yob%d.txt' %year
-    frame = pd.read_csv(path, names=columns)
-
-    frame['year'] = year
-    pieces.append(frame)
-names = pd.concat(pieces, ignore_index=True)
-# print names
-total_births = names.pivot_table('births', index='year', columns='sex', aggfunc=sum)
-# print total_births.tail()
-# total_births.plot(title='Total births by sex and year')
-# plt.show()
-def add_prop(group):
-    births = group.births.astype(float)
-    group['prop'] = births / births.sum()
-    return group
-names = names.groupby(['year', 'sex']).apply(add_prop)
-# print names
-# print np.allclose(names.groupby(['year', 'sex']).prop.sum(), 1)
-def get_top1000(group):
-    return group.sort_values(by='births', ascending=False)[:1000]
-grouped = names.groupby(['year', 'sex'])
-top1000 = grouped.apply(get_top1000)
-pieces = []
-for year, group in names.groupby(['year', 'sex']):
-    pieces.append(group.sort_values(by='births', ascending=False)[:1000])
-top1000 = pd.concat(pieces, ignore_index=True)
-# print top1000
-boys = top1000[top1000.sex == 'M']
-girls = top1000[top1000.sex == 'F']
-total_births = top1000.pivot_table('births', index='year', columns='name', aggfunc=sum)
-# print total_births
-subset = total_births[['John', 'Harry', 'Mary', 'Marilyn']]
-# subset.plot(subplots=True, figsize=(12, 10), grid=False, title="Number of births per year")
-# plt.show()
-table = top1000.pivot_table('prop', index='year', columns='sex', aggfunc=sum)
-# table.plot(title='Sum of table1000.prop by year and sex', yticks=np.linspace(0, 1.2, 13), xticks=range(1880, 2020, 10))
-# plt.show()
-df = boys[boys.year == 2010]
-# print df
-prop_cumsum = df.sort_values(by='prop', ascending=False).prop.cumsum()
-# print prop_cumsum[:10]
-# print prop_cumsum.searchsorted(0.5)
-df = boys[boys.year == 1900]
-in1900 = df.sort_values(by='prop', ascending=False).prop.cumsum()
-# print in1900.searchsorted(0.5).tolist()[0]
-# print type(in1900.searchsorted(0.5))
-# print in1900.searchsorted(0.5)
-# print (in1900.searchsorted(0.5) + 1)
-def get_quantile_count(group, q=0.5):
-    group = group.sort_values(by='prop', ascending=False)
-    return group.prop.cumsum().searchsorted(q).tolist()[0] + 1
-diversity = top1000.groupby(['year', 'sex']).apply(get_quantile_count)
-diversity = diversity.unstack('sex')
-# print diversity.head()
-# diversity.plot(title="Number of popular names in top 50%")
-# plt.show()
-get_last_letter = lambda x: x[-1]
-last_letters = names.name.map(get_last_letter)
-last_letters.name = 'last_letter'
-
-table = names.pivot_table('births', index=last_letters, columns=['sex', 'year'], aggfunc=sum)
-subtable = table.reindex(columns=[1910, 1960, 2010], level='year')
-# print subtable.head()
-# print subtable.sum()
-letter_prop = subtable / subtable.sum().astype(float)
-# fig, axes = plt.subplots(2, 1, figsize=(10, 8))
-# letter_prop['M'].plot(kind='bar', rot=0, ax=axes[0], title='Male')
-# letter_prop['F'].plot(kind='bar', rot=0, ax=axes[1], title='Female', legend=False)
-# plt.show()
-letter_prop = table / table.sum().astype(float)
-dny_ts = letter_prop.ix[['d', 'n', 'y'], 'M'].T
-# print dny_ts.head()
-# dny_ts.plot()
-# plt.show()
-all_names = top1000.name.unique()
-mask = np.array(['lesl' in x.lower() for x in all_names])
-lesley_like = all_names[mask]
-# print lesley_like
-filtered = top1000[top1000.name.isin(lesley_like)]
-# print filtered.groupby('name').births.sum()
-table = filtered.pivot_table('births', index='year', columns='sex', aggfunc='sum')
-table = table.div(table.sum(1), axis=0)
-# print table.tail()
-table.plot(style={'M': 'k-', 'F': 'k--'})
-plt.show()
+nsteps = 1000
+draws = np.random.randint(0, 2, size=nsteps)
+steps = np.where(draws > 0, 1, -1)
+walk = steps.cumsum()
+# print walk.min()
+# print walk.max()
+# print (np.abs(walk) >= 10).argmax()
+nwalks = 5000
+nsteps = 1000
+draws = np.random.randint(0, 2, size=(nwalks, nsteps)) # 0或1
+steps = np.where(draws > 0, 1, -1)
+walks = steps.cumsum(1)
+# print walks
+# print walks.max()
+# print walks.min()
+hits30 = (np.abs(walks) >= 30).any(1)
+print hits30
+print hits30.sum()
+crossing_times = (np.abs(walks[hits30]) >= 30).argmax(1)
+print crossing_times.mean()
+steps = np.random.normal(loc=0, scale=0.25, size=(nwalk, nsteps))
