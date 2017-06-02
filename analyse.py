@@ -1,231 +1,339 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
-from timeit import timeit as timeit
 
-import numpy as np
-from numpy.matlib import randn
+from pandas import Series, DataFrame, np
+import pandas as pd
 
-data1 = [6, 7.5, 8, 0, 1]
-arr1 = np.array(data1)
-# print arr1
-# print type(arr1)
-data2 = [[1, 2, 3, 4], [5, 6, 7, 8]]
-arr2 = np.array(data2)
-# print arr2
-# print arr2.ndim
-# print arr2.shape
-# print 'arr1数据类型:', arr1.dtype
-# print 'arr2数据类型:', arr2.dtype
-# print np.zeros(10)
-# print np.zeros((3, 6))
-# print np.empty((2, 3, 2))
-# print np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-arr1 = np.array([1, 2, 3], dtype=np.float64)
-arr2 = np.array([1, 2, 3], dtype=np.int32)
-# print arr1.dtype
-# print arr2.dtype
-arr = np.array([3.7, -1.2, -2.6, 0.5, 12.9, 10.1])
-# print arr
-# print arr.astype(np.int32)
-numeric_strings = np.array(['1.25', '-9.6', '42'], dtype=np.string_)
-# print numeric_strings
-# print numeric_strings.astype(float)
-int_array = np.arange(10)
-callables = np.array([.22, .270, .357, .380, .44, .50], dtype=np.float64)
-# print int_array.astype(callables.dtype)
-empty_uint32 = np.empty(8, dtype='u4')
-# print empty_uint32
-arr = np.array([[1., 2., 3.], [4., 5., 6.]])
-# print arr
-# print arr * arr
-# print arr - arr
-# print 1 / arr
-# print arr ** 0.5
-arr = np.arange(10)
-# print arr
-# print arr[5]
-# print arr[5:8]
-arr[5:8] = 12
-# print arr
-arr_slice = arr[5:8]
-arr_slice[1] = 12345
-# print arr
-arr_slice[:] = 64
-# print arr
-arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# print arr2d
-# print arr2d[2]
-# print arr2d[0][2]
-# print arr2d[0, 2]
-arr3d = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
-# print arr3d
-# print arr3d[0]
-old_values = arr3d[0].copy()
-arr3d[0] = 42
-# print arr3d
-arr3d[0] = old_values
-# print arr3d
-# print arr3d[1, 0]
-# print arr[1:6]
-# print arr2d
-# print arr2d[:2]
-# print arr2d[:2, 1:]
-# print arr2d[1, :2]
-# print arr2d[2, :1]
-# print arr2d[:, :1]
-arr2d[:2, 1:] = 0
-# print arr2d
-names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
-data = randn(7, 4)
-# print names
+obj = Series([4, 7, -5, 3])
+# print obj
+# print obj.values
+# print obj.index
+obj2 = Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
+# print obj2
+# print obj2.index
+# print obj2['a']
+obj2['d'] = 6
+# print obj2[['c', 'a', 'd']]
+# print obj2
+# print obj2[obj2 > 0]
+# print obj2 * 2
+# print np.exp(obj2)
+# print 'b' in obj2
+# print 'e' in obj2
+sdata = {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
+obj3 = Series(sdata)
+# print obj3
+states = ['California', 'Ohio', 'Oregon', 'Texas']
+obj4 = Series(sdata, index=states)
+# print obj4
+# print pd.isnull(obj4)
+# print pd.notnull(obj4)
+# print obj4.isnull()
+# print obj3
+# print obj4
+# print obj3 + obj4
+obj4.name = 'population'
+obj4.index.name = 'state'
+# print obj4
+obj.index = ['Bob', 'Steve', 'Jeff', 'Ryan']
+# print obj
+data = {'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+        'year': [2000, 2001, 2002, 2001, 2002],
+        'pop': [1.5, 1.7, 3.6, 2.4, 2.9]}
+frame = DataFrame(data)
+# print frame
+# print DataFrame(data, columns=['year', 'state', 'pop'])
+frame2 = DataFrame(data, columns=['year', 'state', 'pop', 'debt'],
+                  index=['one', 'two', 'three', 'four', 'five'])
+# print frame2
+# print frame2.columns
+# print frame2['state']
+# print frame2.year
+# print frame2.ix['three']
+frame2['debt'] = 16.5
+# print frame2
+frame2['debt'] = np.arange(5.)
+# print frame2
+val = Series([-1.2, -1.5, -1.7], index=['two', 'four', 'five'])
+frame2['debt'] = val
+# print frame2
+frame2['eastern'] = frame2.state == 'Ohio'
+# print frame2
+del frame2['eastern']
+# print frame2.columns
+pop = {'Nevada': {2001: 2.4, 2002: 2.9},
+       'Ohio': {2000: 1.5, 2001: 1.7, 2002: 3.6}}
+frame3 = DataFrame(pop)
+# print frame3
+# print frame3.T
+# print DataFrame(pop, index=[2001, 2002, 2003])
+pdata = {'Ohio': frame3['Ohio'][:-1],
+         'Nevada': frame3['Nevada'][:2]}
+# print DataFrame(pdata)
+frame3.index.name = 'year'; frame3.columns.name = 'state'
+# print frame3
+# print frame3.values
+# print frame2.values
+obj = Series(range(3), index=['a', 'b', 'c'])
+index = obj.index
+# print index
+# print index[1:]
+# index[1] = 'd'
+index = pd.Index(np.arange(3))
+obj2 = Series([1.5, -2.5, 0], index=index)
+# print obj2.index is index
+# print frame3
+# print 'Ohio' in frame3.columns
+# print 2003 in frame3.index
+obj = Series([4.5, 7.2, -5.3, 3.6], index=['d', 'b', 'a', 'c'])
+# print obj
+obj2 = obj.reindex(['a', 'b', 'c', 'd', 'e'])
+# print obj2
+# print obj.reindex(['a', 'b', 'c', 'd', 'e'], fill_value=0)
+obj3 = Series(['blue', 'purple', 'yellow'], index=[0, 2, 4])
+# print obj3.reindex(range(6), method='ffill')
+frame = DataFrame(np.arange(9).reshape((3, 3)), index=['a', 'c', 'd'],
+                  columns=['Ohio', 'Texas', 'California'])
+# print frame
+frame2 = frame.reindex(['a', 'b', 'c', 'd'])
+# print frame2
+states = ['Texas', 'Utah', 'California']
+# print frame.reindex(columns=states)
+# print frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill', columns=states)
+# print frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill')
+# print frame.ix[['a', 'b', 'c', 'd'], states]
+obj = Series(np.arange(5.), index=['a', 'b', 'c', 'd', 'e'])
+new_obj = obj.drop('c')
+# print new_obj
+# print obj.drop(['d', 'c'])
+data = DataFrame(np.arange(16).reshape((4, 4)),
+                 index=['Ohio', 'Colorado', 'Utah', 'New York'],
+                 columns=['one', 'two', 'three', 'four'])
+# print data.drop(['Colorado', 'Ohio'])
+# print data.drop('two', axis=1)
+# print data.drop(['two', 'four'], axis=1)
+obj = Series(np.arange(4.), index=['a', 'b', 'c', 'd'])
+# print obj
+# print obj['b']
+# print obj[1]
+# print obj[2:4]
+# print obj[['b', 'a', 'd']]
+# print obj[[1, 3]]
+# print obj[obj < 2]
+# print obj['b':'c']
+obj['b':'c'] = 5
+# print obj
+data = DataFrame(np.arange(16).reshape((4, 4)),
+                 index=['Ohio', 'Colorado', 'Utah', 'New York'],
+                 columns=['one', 'two', 'three', 'four'])
 # print data
-# print names == 'Bob'
-# print data[names == 'Bob']
-# print data[names == 'Bob', 2:]
-# print data[names == 'Bob', 3]
-# print names != 'Bob'
-# print data[-(names == 'Bob')]
-mask = (names == 'Bob') | (names == 'Will')
+# print data['two']
+# print data[['three', 'one']]
+# print data[:2]
+# print data[data['three'] > 5]
+# print data < 5
+data[data < 5] = 0
+# print data
+# print data.ix['Colorado', ['two', 'three']]
+# print data.ix[['Colorado', 'Utah'], [3, 0, 1]]
+# print data.ix[2]
+# print data.ix[:'Utah', 'two']
+# print data.ix[data.three > 5, :3]
+s1 = Series([7.3, -2.5, 3.4, 1.5], index=['a', 'c', 'd', 'e'])
+s2 = Series([-2.1, 3.6, -1.5, 4, 3.1], index=['a', 'c', 'e', 'f', 'g'])
+# print s1, s2, s1 + s2
+df1 = DataFrame(np.arange(9.).reshape((3, 3)), columns=list('bcd'), index=['Ohio', 'Texas', 'Colorado'])
+df2 = DataFrame(np.arange(12.).reshape((4, 3)), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
+# print df1
+# print df2
+# print df1 + df2
+df1 = DataFrame(np.arange(12.).reshape((3, 4)), columns=list('abcd'))
+df2 = DataFrame(np.arange(20.).reshape((4, 5)), columns=list('abcde'))
+# print df1
+# print df2
+# print df1 + df2
+# print df1.add(df2, fill_value=0)
+# print df1.reindex(columns=df2.columns, fill_value=0)
+arr = np.arange(12.).reshape((3, 4))
+# print arr
+# print arr[0]
+# print arr - arr[0]
+frame = DataFrame(np.arange(12.).reshape((4, 3)), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
+series = frame.ix[0]
+# print frame
+# print series
+# print frame - series
+series2 = Series(range(3), index=['b', 'e', 'f'])
+# print series2
+# print frame + series2
+series3 = frame['d']
+# print frame
+# print series3
+# print frame.sub(series3, axis=0)
+frame = DataFrame(np.random.randn(4, 3), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
+# print frame
+# print np.abs(frame)
+f = lambda x: x.max() - x.min()
+# print frame.apply(f)
+# print frame.apply(f, axis=1)
+def f(x):
+    return Series([x.min(), x.max()], index=['min', 'max'])
+# print frame.apply(f)
+format = lambda x: '%.2f' %x
+# print frame.applymap(format)
+# print frame['e'].map(format)
+obj = Series(range(4), index=['d', 'a', 'b', 'c'])
+# print obj.sort_index()
+frame = DataFrame(np.arange(8).reshape((2, 4)), index=['three', 'one'], columns=['d', 'a', 'b', 'c'])
+# print frame.sort_index()
+# print frame.sort_index(axis=1)
+# print frame.sort_index(axis=1, ascending=False)
+obj = Series([4, 7, -3, 2])
+# print obj
+# print obj.sort_values() #order 替换为 sort_value
+obj = Series([4, np.nan, 7, np.nan, -3, 2])
+# print obj.sort_values()
+frame = DataFrame({'b': [4, 7, -3, 2], 'a': [0, 1, 0, 1]})
+# print frame
+# print frame.sort_values(by='b')
+# print frame.sort_values(by=['a', 'b'])
+obj = Series([7, -5, 7, 4, 2, 0, 4])
+# print obj.rank()
+# print obj.rank(method='first')
+# print obj.rank(ascending=False, method='max')
+frame = DataFrame({'b': [4.3, 7, -3, 2], 'a': [0, 1, 0, 1], 'c': [-2, 5, 8, -2.5]})
+# print frame
+# print frame.rank(axis=1)
+obj = Series(range(5), index=['a', 'a', 'b', 'b', 'c'])
+# print obj
+# print obj.index.is_unique
+# print obj['a']
+# print obj['c']
+df = DataFrame(np.random.randn(4, 3), index=['a', 'a', 'b', 'b'])
+# print df
+# print df.ix['b']
+df = DataFrame([[1.4, np.nan], [7.1, -4.5],
+                 [np.nan, np.nan], [0.75, -1.3]],
+                index=['a', 'b', 'c', 'd'],
+               columns=['one', 'two'])
+# print df
+# print df.sum()
+# print df.sum(axis=1)
+# print df.mean(axis=1, skipna=False)
+# print df.idxmax()
+# print df.cumsum()
+# print df.describe()
+obj = Series(['a', 'a', 'b', 'c'] * 4)
+# print obj.describe()
+# from pandas_datareader import data as web
+# all_data = {}
+# for ticker in ['APPL', 'IBM', 'MSFT', 'GOOG']:
+#     all_data[ticker] = web.get_data_yahoo(ticker, '01/01/2000', '01/01/2010')
+    # all_data[ticker] = web.get_data_yahoo(ticker)
+# price = DataFrame({tic: data['Adj Close']
+#                    for tic, data in all_data.iteritems()})
+# volume = DataFrame({tic: data['Volume']
+#                    for tic, data in all_data.iteritems()})
+# returns = price.pct_change()
+# print returns.tail()
+# print returns.cov()
+# print returns.corrwith(returns.IBM)
+# print returns.corrwith(volume)
+#雅虎链接已经失效, 不能获取数据
+obj = Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
+uniques = obj.unique()
+# print uniques
+# print obj.value_counts()
+# print pd.value_counts(obj.values, sort=False)
+mask = obj.isin(['b', 'c'])
 # print mask
-# print data[mask]
-# data[data < 0] = 0
+# print obj[mask]
+data = DataFrame({'Qu1': [1, 3, 4, 3, 4],
+                  'Qu2': [2, 3, 1, 2, 3],
+                  'Qu3': [1, 5, 2, 4, 4]})
 # print data
-data[names != 'Joe'] = 7
+result = data.apply(pd.value_counts).fillna(0)
+# print result
+string_data = Series(['aardvark', 'artichoke', np.nan, 'avocado'])
+# print string_data
+# print string_data.isnull()
+string_data[0] = None
+# print string_data.isnull()
+from numpy import nan as NA
+data = Series([1, NA, 3.5, NA, 7])
+# print data.dropna()
+# print data[data.notnull()]
+data = DataFrame([[1., 6.5, 3.], [1., NA, NA],
+                  [NA, NA, NA], [NA, 6.5, 3.]])
+cleaned = data.dropna()
 # print data
-arr = np.empty((8, 4))
-for i in range(8):
-    arr[i] = i
-# print arr
-# print arr[[4, 3, 0, 6]]
-# print arr[[-3, -5, -7]]
-arr = np.arange(32).reshape((8, 4))
-# print arr
-# print arr[[1, 5, 7, 2]][:, [0, 3, 1, 2]]
-# print arr[np.ix_([1, 5, 7, 2], [0, 3, 1, 2])]
-arr = np.arange(15).reshape((3, 5))
-# print arr
-# print arr.T
-arr = np.random.randn(6, 3)
-# print np.dot(arr.T, arr)
-arr = np.arange(16).reshape((2, 2, 4))
-# print arr
-# print arr.transpose((1, 0, 2))
-# print arr.swapaxes(1, 2)
-arr = np.arange(10)
-# print np.sqrt(arr)
-# print np.exp(arr)
-x = randn(8)
-y = randn(8)
-# print x, y
-# print np.maximum(x, y)
-arr = randn(7) * 5
-# print arr
-# print np.modf(arr)
-points = np.arange(-5, 5, 0.01)
-xs, ys = np.meshgrid(points, points)
-# print ys
-z = np.sqrt(xs ** 2 + ys ** 2)
-# print z
-import matplotlib.pyplot as plt
-# plt.imshow(z, cmap=plt.cm.gray); plt.colorbar()
-# plt.title('Image plot of $\sqrt{x^2 + y^2}$ for a grid of values')
-# plt.show()
-xarr = np.array([1.1, 1.2, 1.3, 1.4, 1.5])
-yarr = np.array([2.1, 2.2, 2.3, 2.4, 2.5])
-cond = np.array([True, False, True, True, False])
-result = [(x if c else y)
-          for x, y, c in zip(xarr, yarr, cond)]
-# print result
-result = np.where(cond, xarr, yarr)
-# print result
-arr = randn(4, 4)
-# print arr
-# print np.where(arr > 0, 2, -2)
-# print np.where(arr > 0, 2, arr)
-arr = np.random.randn(5, 4)
-# print arr.mean()
-# print np.mean(arr)
-# print arr.sum()
-# print arr.mean(axis=1)
-# print arr.sum(0)
-arr = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-# print arr.cumsum(0)
-# print arr.cumprod(1)
-arr = randn(100)
-# print (arr > 0).sum()
-bools = np.array([False, False, True, False])
-# print bools.any()
-# print bools.all()
-arr = randn(8)
-# print arr
-arr.sort()
-# print arr
-arr = randn(5, 3)
-# print arr
-arr.sort(1)
-# print arr
-large_arr = randn(1000)
-large_arr.sort()
-# print len(large_arr)
-# print large_arr[int(0.05 * len(large_arr))]
-# print large_arr[int(0.05)]
-names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
-# print np.unique(names)
-ints = np.array([3, 3, 3, 2, 2, 1, 1, 4, 4])
-# print np.unique(ints)
-# print sorted(set(names))
-values = np.array([6, 0, 0, 3, 2, 5, 6])
-# print np.in1d(values, [2, 3, 6])
-arr = np.arange(10)
-np.save('some_array', arr)
-# print np.load('some_array.npy')
-np.savez('array_archive.npz', a=arr, b=arr)
-arch = np.load('array_archive.npz')
-# print arch['b']
-arr = np.loadtxt('ch04/array_ex.txt', delimiter=',')
-# print arr
-x = np.array([[1., 2., 3.], [4., 5., 6.]])
-y = np.array([[6., 23.], [-1, 7], [8, 9]])
-# print x, y
-# print x.dot(y)
-# print np.dot(x, np.ones(3))
-from numpy.linalg import inv, qr
-x =randn(5, 5)
-mat = x.T.dot(x)
-# print inv(mat)
-# print mat.dot(inv(mat))
-q, r = qr(mat)
-# print r
-samples = np.random.normal(size=(4, 4))
-# print samples
-import random
-position = 0
-walk = [position]
-steps = 1000
-for i in xrange(steps):
-    step = 1 if random.randint(0, 1) else -1
-    position += step
-    walk.append(position)
-
-nsteps = 1000
-draws = np.random.randint(0, 2, size=nsteps)
-steps = np.where(draws > 0, 1, -1)
-walk = steps.cumsum()
-# print walk.min()
-# print walk.max()
-# print (np.abs(walk) >= 10).argmax()
-nwalks = 5000
-nsteps = 1000
-draws = np.random.randint(0, 2, size=(nwalks, nsteps)) # 0或1
-steps = np.where(draws > 0, 1, -1)
-walks = steps.cumsum(1)
-# print walks
-# print walks.max()
-# print walks.min()
-hits30 = (np.abs(walks) >= 30).any(1)
-print hits30
-print hits30.sum()
-crossing_times = (np.abs(walks[hits30]) >= 30).argmax(1)
-print crossing_times.mean()
-steps = np.random.normal(loc=0, scale=0.25, size=(nwalk, nsteps))
+# print cleaned
+# print data.dropna(how='all')
+data[4] = NA
+# print data
+# print data.dropna(axis=1, how='all')
+df = DataFrame(np.random.randn(7, 3))
+df.ix[:4, 1] = NA; df.ix[:2, 2] = NA
+# print df
+# print df.dropna(thresh=3)
+# print df.fillna(0)
+# print df.fillna({1: 0.5, 3: -1})
+_ = df.fillna(0, inplace=True)
+# print df
+df = DataFrame(np.random.randn(6, 3))
+df.ix[2:, 1] = NA; df.ix[4:, 2] = NA
+# print df
+# print df.fillna(method='ffill')
+# print df.fillna(method='ffill', limit=2)
+data = Series([1., NA, 3.5, NA, 7])
+# print data.fillna(data.mean())
+data = Series(np.random.randn(10),
+              index=[['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'd'],
+                     [1, 2, 3, 1, 2, 3, 1, 2, 2, 3]])
+# print data
+# print data.index
+# print data['b']
+# print data['b':'c']
+# print data.ix[['b', 'd']]
+# print data[:, 2]
+# print data.unstack()
+# print data.unstack().stack()
+frame = DataFrame(np.arange(12).reshape((4, 3)),
+                  index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]],
+                  columns=[['Ohio', 'Ohio', 'Colorado'],
+                           ['Green', 'Red', 'Green']])
+# print frame
+frame.index.names = ['key1', 'key2']
+frame.columns.names = ['state', 'color']
+# print frame
+# print frame['Ohio']
+pd.MultiIndex.from_arrays([['Ohio', 'Ohio', 'Colorado'], ['Green', 'Red', 'Green']],
+                          names=['state', 'color'])
+# print frame.swaplevel('key1', 'key2')
+# print frame.sortlevel(1)
+# print frame.swaplevel(0, 1).sortlevel(0)
+# print frame.sum(level='key2')
+# print frame.sum(level='color', axis=1)
+frame = DataFrame({'a': range(7), 'b': range(7, 0, -1),
+                   'c': ['one', 'one', 'one', 'two', 'two', 'two', 'two'],
+                   'd': [0, 1, 2, 0, 1, 2, 3]})
+# print frame
+frame2 = frame.set_index(['c', 'd'])
+# print frame2
+# print frame.set_index(['c', 'd'], drop=False)
+# print frame2.reset_index()
+ser = Series(np.arange(3.))
+# print ser[-1]
+# print ser
+ser2 = Series(np.arange(3.), index=['a', 'b', 'c'])
+# print ser2[-1]
+# print ser.ix[:1]
+ser3 = Series(range(3), index=[-5, 1, 3])
+# print ser3
+# print ser3.get_value(-5)
+# print ser3.iloc[2]
+# print ser3.iat[2]
+frame = DataFrame(np.arange(6).reshape(3, 2), index=[2, 0, 1])
+# print frame.iloc[1]#按行位置获取
+# print frame.iloc[:, 1]#按列位置获取
