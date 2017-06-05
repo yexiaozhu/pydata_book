@@ -1,339 +1,151 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
-
-from pandas import Series, DataFrame, np
 import pandas as pd
 
-obj = Series([4, 7, -5, 3])
-# print obj
-# print obj.values
-# print obj.index
-obj2 = Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
-# print obj2
-# print obj2.index
-# print obj2['a']
-obj2['d'] = 6
-# print obj2[['c', 'a', 'd']]
-# print obj2
-# print obj2[obj2 > 0]
-# print obj2 * 2
-# print np.exp(obj2)
-# print 'b' in obj2
-# print 'e' in obj2
-sdata = {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
-obj3 = Series(sdata)
-# print obj3
-states = ['California', 'Ohio', 'Oregon', 'Texas']
-obj4 = Series(sdata, index=states)
-# print obj4
-# print pd.isnull(obj4)
-# print pd.notnull(obj4)
-# print obj4.isnull()
-# print obj3
-# print obj4
-# print obj3 + obj4
-obj4.name = 'population'
-obj4.index.name = 'state'
-# print obj4
-obj.index = ['Bob', 'Steve', 'Jeff', 'Ryan']
-# print obj
-data = {'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
-        'year': [2000, 2001, 2002, 2001, 2002],
-        'pop': [1.5, 1.7, 3.6, 2.4, 2.9]}
-frame = DataFrame(data)
-# print frame
-# print DataFrame(data, columns=['year', 'state', 'pop'])
-frame2 = DataFrame(data, columns=['year', 'state', 'pop', 'debt'],
-                  index=['one', 'two', 'three', 'four', 'five'])
-# print frame2
-# print frame2.columns
-# print frame2['state']
-# print frame2.year
-# print frame2.ix['three']
-frame2['debt'] = 16.5
-# print frame2
-frame2['debt'] = np.arange(5.)
-# print frame2
-val = Series([-1.2, -1.5, -1.7], index=['two', 'four', 'five'])
-frame2['debt'] = val
-# print frame2
-frame2['eastern'] = frame2.state == 'Ohio'
-# print frame2
-del frame2['eastern']
-# print frame2.columns
-pop = {'Nevada': {2001: 2.4, 2002: 2.9},
-       'Ohio': {2000: 1.5, 2001: 1.7, 2002: 3.6}}
-frame3 = DataFrame(pop)
-# print frame3
-# print frame3.T
-# print DataFrame(pop, index=[2001, 2002, 2003])
-pdata = {'Ohio': frame3['Ohio'][:-1],
-         'Nevada': frame3['Nevada'][:2]}
-# print DataFrame(pdata)
-frame3.index.name = 'year'; frame3.columns.name = 'state'
-# print frame3
-# print frame3.values
-# print frame2.values
-obj = Series(range(3), index=['a', 'b', 'c'])
-index = obj.index
-# print index
-# print index[1:]
-# index[1] = 'd'
-index = pd.Index(np.arange(3))
-obj2 = Series([1.5, -2.5, 0], index=index)
-# print obj2.index is index
-# print frame3
-# print 'Ohio' in frame3.columns
-# print 2003 in frame3.index
-obj = Series([4.5, 7.2, -5.3, 3.6], index=['d', 'b', 'a', 'c'])
-# print obj
-obj2 = obj.reindex(['a', 'b', 'c', 'd', 'e'])
-# print obj2
-# print obj.reindex(['a', 'b', 'c', 'd', 'e'], fill_value=0)
-obj3 = Series(['blue', 'purple', 'yellow'], index=[0, 2, 4])
-# print obj3.reindex(range(6), method='ffill')
-frame = DataFrame(np.arange(9).reshape((3, 3)), index=['a', 'c', 'd'],
-                  columns=['Ohio', 'Texas', 'California'])
-# print frame
-frame2 = frame.reindex(['a', 'b', 'c', 'd'])
-# print frame2
-states = ['Texas', 'Utah', 'California']
-# print frame.reindex(columns=states)
-# print frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill', columns=states)
-# print frame.reindex(index=['a', 'b', 'c', 'd'], method='ffill')
-# print frame.ix[['a', 'b', 'c', 'd'], states]
-obj = Series(np.arange(5.), index=['a', 'b', 'c', 'd', 'e'])
-new_obj = obj.drop('c')
-# print new_obj
-# print obj.drop(['d', 'c'])
-data = DataFrame(np.arange(16).reshape((4, 4)),
-                 index=['Ohio', 'Colorado', 'Utah', 'New York'],
-                 columns=['one', 'two', 'three', 'four'])
-# print data.drop(['Colorado', 'Ohio'])
-# print data.drop('two', axis=1)
-# print data.drop(['two', 'four'], axis=1)
-obj = Series(np.arange(4.), index=['a', 'b', 'c', 'd'])
-# print obj
-# print obj['b']
-# print obj[1]
-# print obj[2:4]
-# print obj[['b', 'a', 'd']]
-# print obj[[1, 3]]
-# print obj[obj < 2]
-# print obj['b':'c']
-obj['b':'c'] = 5
-# print obj
-data = DataFrame(np.arange(16).reshape((4, 4)),
-                 index=['Ohio', 'Colorado', 'Utah', 'New York'],
-                 columns=['one', 'two', 'three', 'four'])
-# print data
-# print data['two']
-# print data[['three', 'one']]
-# print data[:2]
-# print data[data['three'] > 5]
-# print data < 5
-data[data < 5] = 0
-# print data
-# print data.ix['Colorado', ['two', 'three']]
-# print data.ix[['Colorado', 'Utah'], [3, 0, 1]]
-# print data.ix[2]
-# print data.ix[:'Utah', 'two']
-# print data.ix[data.three > 5, :3]
-s1 = Series([7.3, -2.5, 3.4, 1.5], index=['a', 'c', 'd', 'e'])
-s2 = Series([-2.1, 3.6, -1.5, 4, 3.1], index=['a', 'c', 'e', 'f', 'g'])
-# print s1, s2, s1 + s2
-df1 = DataFrame(np.arange(9.).reshape((3, 3)), columns=list('bcd'), index=['Ohio', 'Texas', 'Colorado'])
-df2 = DataFrame(np.arange(12.).reshape((4, 3)), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
-# print df1
-# print df2
-# print df1 + df2
-df1 = DataFrame(np.arange(12.).reshape((3, 4)), columns=list('abcd'))
-df2 = DataFrame(np.arange(20.).reshape((4, 5)), columns=list('abcde'))
-# print df1
-# print df2
-# print df1 + df2
-# print df1.add(df2, fill_value=0)
-# print df1.reindex(columns=df2.columns, fill_value=0)
-arr = np.arange(12.).reshape((3, 4))
-# print arr
-# print arr[0]
-# print arr - arr[0]
-frame = DataFrame(np.arange(12.).reshape((4, 3)), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
-series = frame.ix[0]
-# print frame
-# print series
-# print frame - series
-series2 = Series(range(3), index=['b', 'e', 'f'])
-# print series2
-# print frame + series2
-series3 = frame['d']
-# print frame
-# print series3
-# print frame.sub(series3, axis=0)
-frame = DataFrame(np.random.randn(4, 3), columns=list('bde'), index=['Utah', 'Ohio', 'Texas', 'Oregon'])
-# print frame
-# print np.abs(frame)
-f = lambda x: x.max() - x.min()
-# print frame.apply(f)
-# print frame.apply(f, axis=1)
-def f(x):
-    return Series([x.min(), x.max()], index=['min', 'max'])
-# print frame.apply(f)
-format = lambda x: '%.2f' %x
-# print frame.applymap(format)
-# print frame['e'].map(format)
-obj = Series(range(4), index=['d', 'a', 'b', 'c'])
-# print obj.sort_index()
-frame = DataFrame(np.arange(8).reshape((2, 4)), index=['three', 'one'], columns=['d', 'a', 'b', 'c'])
-# print frame.sort_index()
-# print frame.sort_index(axis=1)
-# print frame.sort_index(axis=1, ascending=False)
-obj = Series([4, 7, -3, 2])
-# print obj
-# print obj.sort_values() #order 替换为 sort_value
-obj = Series([4, np.nan, 7, np.nan, -3, 2])
-# print obj.sort_values()
-frame = DataFrame({'b': [4, 7, -3, 2], 'a': [0, 1, 0, 1]})
-# print frame
-# print frame.sort_values(by='b')
-# print frame.sort_values(by=['a', 'b'])
-obj = Series([7, -5, 7, 4, 2, 0, 4])
-# print obj.rank()
-# print obj.rank(method='first')
-# print obj.rank(ascending=False, method='max')
-frame = DataFrame({'b': [4.3, 7, -3, 2], 'a': [0, 1, 0, 1], 'c': [-2, 5, 8, -2.5]})
-# print frame
-# print frame.rank(axis=1)
-obj = Series(range(5), index=['a', 'a', 'b', 'b', 'c'])
-# print obj
-# print obj.index.is_unique
-# print obj['a']
-# print obj['c']
-df = DataFrame(np.random.randn(4, 3), index=['a', 'a', 'b', 'b'])
+df = pd.read_csv('ch06/ex1.csv')
 # print df
-# print df.ix['b']
-df = DataFrame([[1.4, np.nan], [7.1, -4.5],
-                 [np.nan, np.nan], [0.75, -1.3]],
-                index=['a', 'b', 'c', 'd'],
-               columns=['one', 'two'])
-# print df
-# print df.sum()
-# print df.sum(axis=1)
-# print df.mean(axis=1, skipna=False)
-# print df.idxmax()
-# print df.cumsum()
-# print df.describe()
-obj = Series(['a', 'a', 'b', 'c'] * 4)
-# print obj.describe()
-# from pandas_datareader import data as web
-# all_data = {}
-# for ticker in ['APPL', 'IBM', 'MSFT', 'GOOG']:
-#     all_data[ticker] = web.get_data_yahoo(ticker, '01/01/2000', '01/01/2010')
-    # all_data[ticker] = web.get_data_yahoo(ticker)
-# price = DataFrame({tic: data['Adj Close']
-#                    for tic, data in all_data.iteritems()})
-# volume = DataFrame({tic: data['Volume']
-#                    for tic, data in all_data.iteritems()})
-# returns = price.pct_change()
-# print returns.tail()
-# print returns.cov()
-# print returns.corrwith(returns.IBM)
-# print returns.corrwith(volume)
-#雅虎链接已经失效, 不能获取数据
-obj = Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
-uniques = obj.unique()
-# print uniques
-# print obj.value_counts()
-# print pd.value_counts(obj.values, sort=False)
-mask = obj.isin(['b', 'c'])
-# print mask
-# print obj[mask]
-data = DataFrame({'Qu1': [1, 3, 4, 3, 4],
-                  'Qu2': [2, 3, 1, 2, 3],
-                  'Qu3': [1, 5, 2, 4, 4]})
-# print data
-result = data.apply(pd.value_counts).fillna(0)
+# print pd.read_csv('ch06/ex1.csv', sep=',')
+# print pd.read_csv('ch06/ex2.csv', names=['a', 'b', 'c', 'd', 'message'])
+names = ['a', 'b', 'c', 'd', 'message']
+# print pd.read_csv('ch06/ex2.csv', names=names, index_col='message')
+parsed = pd.read_csv('ch06/csv_mindex.csv', index_col=['key1', 'key2'])
+# print parsed
+# print list(open('ch06/ex3.txt'))
+result = pd.read_table('ch06/ex3.txt', sep='\s+')
 # print result
-string_data = Series(['aardvark', 'artichoke', np.nan, 'avocado'])
-# print string_data
-# print string_data.isnull()
-string_data[0] = None
-# print string_data.isnull()
-from numpy import nan as NA
-data = Series([1, NA, 3.5, NA, 7])
-# print data.dropna()
-# print data[data.notnull()]
-data = DataFrame([[1., 6.5, 3.], [1., NA, NA],
-                  [NA, NA, NA], [NA, 6.5, 3.]])
-cleaned = data.dropna()
+# print pd.read_csv('ch06/ex4.csv', skiprows=[0, 2, 3])
+result =  pd.read_csv('ch06/ex5.csv')
+# print result
+# print pd.isnull(result)
+result = pd.read_csv('ch06/ex5.csv', na_values=['NULL'])
+# print result
+sentinels = {'message': ['foo', 'NA'], 'something': ['two']}
+# print pd.read_csv('ch06/ex5.csv', na_values=sentinels)
+result = pd.read_csv('ch06/ex6.csv')
+# print result
+# print pd.read_csv('ch06/ex6.csv', nrows=5)
+chunker = pd.read_csv('ch06/ex6.csv', chunksize=1000)
+# print chunker
+tot = pd.Series([])
+for piece in chunker:
+    tot = tot.add(piece['key'].value_counts(), fill_value=0)
+tot = tot.sort_values(ascending=False) # order替换为sort_value
+# print tot[:10]
+data = pd.read_csv('ch06/ex5.csv')
 # print data
-# print cleaned
-# print data.dropna(how='all')
-data[4] = NA
-# print data
-# print data.dropna(axis=1, how='all')
-df = DataFrame(np.random.randn(7, 3))
-df.ix[:4, 1] = NA; df.ix[:2, 2] = NA
-# print df
-# print df.dropna(thresh=3)
-# print df.fillna(0)
-# print df.fillna({1: 0.5, 3: -1})
-_ = df.fillna(0, inplace=True)
-# print df
-df = DataFrame(np.random.randn(6, 3))
-df.ix[2:, 1] = NA; df.ix[4:, 2] = NA
-# print df
-# print df.fillna(method='ffill')
-# print df.fillna(method='ffill', limit=2)
-data = Series([1., NA, 3.5, NA, 7])
-# print data.fillna(data.mean())
-data = Series(np.random.randn(10),
-              index=[['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'd'],
-                     [1, 2, 3, 1, 2, 3, 1, 2, 2, 3]])
-# print data
-# print data.index
-# print data['b']
-# print data['b':'c']
-# print data.ix[['b', 'd']]
-# print data[:, 2]
-# print data.unstack()
-# print data.unstack().stack()
-frame = DataFrame(np.arange(12).reshape((4, 3)),
-                  index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]],
-                  columns=[['Ohio', 'Ohio', 'Colorado'],
-                           ['Green', 'Red', 'Green']])
+# data.to_csv('ch06/out.csv')
+datas = pd.date_range('1/1/2000', periods=7)
+from pandas import Series, np
+ts = Series(np.arange(7), index=datas)
+# ts.to_csv('ch06/tseries.csv')
+# print Series.from_csv('ch06/tseries.csv', parse_dates=True)
+import csv
+f = open('ch06/ex7.csv')
+reader = csv.reader(f)
+# for line in reader:
+    # print line
+lines = list(csv.reader(open('ch06/ex7.csv')))
+header, values = lines[0], lines[1:]
+data_dict = {h: v for h, v in zip(header, zip(*values))}
+# print data_dict
+import json
+obj = """
+{"name": "Wes",
+ "palce_lived": ["United States", "Spain", "Germany"],
+ "pet": null,
+ "siblings": [{"name": "Scott", "age": 25, "pet": "Zuko"},
+ {"name": "Katie", "age": 33, "pet": "Cisco"}]
+}
+"""
+result = json.loads(obj)
+# print result
+asjson = json.dumps(result)
+# print asjson
+from pandas import DataFrame
+siblings = DataFrame(result['siblings'], columns=['name', 'age'])
+# print siblings
+from lxml.html import parse
+from urllib2 import urlopen
+parsed = parse(urlopen('https://finance.yahoo.com/q/op?s=AAPL+Options'))
+doc = parsed.getroot()
+links = doc.findall('.//a')
+# print links[15:20]
+link = links[28]
+# print link
+# print link.get('href')
+# print link.text_content()
+urls = [link.get('href') for link in doc.findall('.//a')]
+# print urls
+# print urls[-10:]
+tables = doc.findall('.//table')
+# print tables
+calls = tables[2]
+puts = tables[2]
+rows = calls.findall('.//tr')
+def _unpack(row, kind='td'):
+    elts = row.findall('.//%s' %kind)
+    return [val.text_content() for val in elts]
+# print _unpack(rows[0], kind='th')
+# print _unpack(rows[1], kind='td')
+from pandas.io.parsers import TextParser
+def parse_options_data(table):
+    rows = table.findall('.//tr')
+    header = _unpack(rows[0], kind='th')
+    data = [_unpack(r) for r in rows[1:]]
+    return TextParser(data, names=header).get_chunk()
+call_data = parse_options_data(calls)
+put_data = parse_options_data(puts)
+# print call_data[:10]
+from StringIO import StringIO
+from lxml import objectify
+tag = '<a href="http://www.google.com">Google</a>'
+root = objectify.parse(StringIO(tag)).getroot()
+# print root
+# print root.get('href')
+# print root.text
+frame = pd.read_csv('ch06/ex1.csv')
 # print frame
-frame.index.names = ['key1', 'key2']
-frame.columns.names = ['state', 'color']
+# print type(frame)
+# frame.save('ch06/frame_prckle')  # 没有save这个方法了
+# print pd.load('ch06/frame_pickle')
+# store = pd.HDFStore('mydata.h5')
 # print frame
-# print frame['Ohio']
-pd.MultiIndex.from_arrays([['Ohio', 'Ohio', 'Colorado'], ['Green', 'Red', 'Green']],
-                          names=['state', 'color'])
-# print frame.swaplevel('key1', 'key2')
-# print frame.sortlevel(1)
-# print frame.swaplevel(0, 1).sortlevel(0)
-# print frame.sum(level='key2')
-# print frame.sum(level='color', axis=1)
-frame = DataFrame({'a': range(7), 'b': range(7, 0, -1),
-                   'c': ['one', 'one', 'one', 'two', 'two', 'two', 'two'],
-                   'd': [0, 1, 2, 0, 1, 2, 3]})
-# print frame
-frame2 = frame.set_index(['c', 'd'])
-# print frame2
-# print frame.set_index(['c', 'd'], drop=False)
-# print frame2.reset_index()
-ser = Series(np.arange(3.))
-# print ser[-1]
-# print ser
-ser2 = Series(np.arange(3.), index=['a', 'b', 'c'])
-# print ser2[-1]
-# print ser.ix[:1]
-ser3 = Series(range(3), index=[-5, 1, 3])
-# print ser3
-# print ser3.get_value(-5)
-# print ser3.iloc[2]
-# print ser3.iat[2]
-frame = DataFrame(np.arange(6).reshape(3, 2), index=[2, 0, 1])
-# print frame.iloc[1]#按行位置获取
-# print frame.iloc[:, 1]#按列位置获取
+# store['obj1'] = frame
+# store['obj1_col'] = frame['a']
+# print store # 需安装table库
+# print store['obj1']
+import requests, json
+url = 'https://api.twitter.com/1.1/search/tweets.json?q=python'
+# 需要twitter账号验证 暂未申请
+# resp = requests.get(url)
+# print resp
+# data = json.loads(resp.text)
+# print data.keys()
+# tweet_fields = ['created_at', 'from_user', 'id', 'text']
+# tweets = DataFrame(data['results'], columns=tweet_fields)
+# print tweets
+# print tweets.ix[7]
+
+import sqlite3
+query = """
+CREATE TABLE test
+(a VARCHAR(20), b VARCHAR(20),
+c REAL, d INTEGER
+);"""
+con = sqlite3.connect(':memory:')
+con.execute(query)
+con.commit()
+data = [('Atlanta', 'Georgia', 1.25, 6),
+        ('Tallahassee', 'Florida', 2.6, 3),
+        ('Sacramento', 'California', 1.7, 5)]
+stmt = "INSERT INTO test VALUES(?, ?, ?, ?)"
+con.executemany(stmt, data)
+con.commit()
+cursor = con.execute('select * from test')
+rows = cursor.fetchall()
+# print rows
+# print cursor.description
+# print DataFrame(rows, columns=zip(*cursor.description)[0])
+from pandas import read_sql
+# print read_sql('select * from test', con) # pandas.io.sql.read_frame已被read_sql替换
