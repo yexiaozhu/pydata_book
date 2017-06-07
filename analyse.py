@@ -2,150 +2,335 @@
 #coding=utf-8
 #author=yexiaozhu
 import pandas as pd
+from pandas import DataFrame, np, Series
 
-df = pd.read_csv('ch06/ex1.csv')
-# print df
-# print pd.read_csv('ch06/ex1.csv', sep=',')
-# print pd.read_csv('ch06/ex2.csv', names=['a', 'b', 'c', 'd', 'message'])
-names = ['a', 'b', 'c', 'd', 'message']
-# print pd.read_csv('ch06/ex2.csv', names=names, index_col='message')
-parsed = pd.read_csv('ch06/csv_mindex.csv', index_col=['key1', 'key2'])
-# print parsed
-# print list(open('ch06/ex3.txt'))
-result = pd.read_table('ch06/ex3.txt', sep='\s+')
+df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+                'data1': range(7)})
+df2 = DataFrame({'key': ['a', 'b', 'd'],
+                 'data2': range(3)})
+# print df1
+# print df2
+# print pd.merge(df1, df2)
+# print pd.merge(df1, df2, on='key')
+df3 = DataFrame({'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+                'data1': range(7)})
+df4 = DataFrame({'rkey': ['a', 'b', 'd'],
+                 'data2': range(3)})
+# print pd.merge(df3, df4, left_on='lkey', right_on='rkey')
+# print pd.merge(df1, df2, how='outer')
+df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'b'],
+                 'data1': range(6)})
+df2 = DataFrame({'key': ['a', 'b', 'a', 'b', 'd'],
+                 'data2': range(5)})
+# print df1
+# print df2
+# print pd.merge(df1, df2, on='key', how='left')
+# print pd.merge(df1, df2, how='inner')
+left = DataFrame({'key1': ['foo', 'foo', 'bar'],
+                  'key2': ['one', 'two', 'one'],
+                  'lval': [1, 2, 3]})
+right = DataFrame({'key1': ['foo', 'foo', 'bar', 'bar'],
+                   'key2': ['one', 'one', 'one', 'two'],
+                   'rval': [4, 5, 6, 7]})
+# print pd.merge(left, right, on = ['key1', 'key2'], how='outer')
+# print pd.merge(left, right, on = 'key1')
+# print pd.merge(left, right, on='key1', suffixes=('_left', '_right'), sort=True)
+left1 = DataFrame({'key': ['a', 'b', 'a', 'a', 'b', 'c'],
+                   'value': range(6)})
+right1 = DataFrame({'group_val': [3.5, 7]}, index=['a', 'b'])
+# print left1
+# print right1
+# print pd.merge(left1, right1, left_on='key', right_index=True)
+# print pd.merge(left1, right1, left_on='key', right_index=True, how='outer')
+lefth = DataFrame({'key1': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+                   'key2': [2000, 2001, 2002, 2001, 2002],
+                   'data': np.arange(5.)})
+righth = DataFrame(np.arange(12).reshape((6, 2)),
+                   index=[['Nevada', 'Nevada', 'Ohio', 'Ohio', 'Ohio', 'Ohio'],
+                          [2001, 2000, 2000, 2000, 2001, 2002]],
+                   columns=['event1', 'event2'])
+# print lefth
+# print righth
+# print pd.merge(lefth, righth, left_on=['key1', 'key2'], right_index=True, sort=True)
+# print pd.merge(lefth, righth, left_on=['key1', 'key2'], right_index=True, how='outer', sort=True)
+left2 = DataFrame([[1., 2.], [3., 4.], [5., 6.]], index=['a', 'c', 'e'], columns=['Ohio', 'Nevada'])
+right2 = DataFrame([[7., 8.], [9., 10.], [11., 12.], [13, 14]], index=['b', 'c', 'd', 'e'], columns=['Missouri', 'Alabama'])
+# print left2
+# print right2
+# print pd.merge(left2, right2, how='outer', left_index=True, right_index=True)
+# print left2.join(right2, how='outer')
+# print left1.join(right1, on='key')
+another = DataFrame([[7., 8.], [9., 10.], [11., 12.], [16., 17.]],
+                    index=['a', 'c', 'e', 'f'], columns=['New York', 'Oregon'])
+# print another
+# print left2.join([right2, another])
+# print left2.join([right2, another], how='outer')
+arr = np.arange(12).reshape((3, 4))
+# print arr
+# print np.concatenate([arr, arr], axis=1)
+s1 = Series([0, 1], index=['a', 'b'])
+s2 = Series([2, 3, 4], index=['c', 'd', 'e'])
+s3 = Series([5, 6], index=['f', 'g'])
+# print pd.concat([s1, s2, s3])
+# print pd.concat([s1, s2, s3], axis=1)
+s4 = pd.concat([s1 * 5, s3])
+# print pd.concat([s1, s4], axis=1)
+# print pd.concat([s1, s4], axis=1, join='inner')
+# print pd.concat([s1, s4], axis=1, join_axes=[['a', 'c', 'b', 'e']])
+result = pd.concat([s1, s1, s3], keys=['one', 'two', 'three'])
 # print result
-# print pd.read_csv('ch06/ex4.csv', skiprows=[0, 2, 3])
-result =  pd.read_csv('ch06/ex5.csv')
-# print result
-# print pd.isnull(result)
-result = pd.read_csv('ch06/ex5.csv', na_values=['NULL'])
-# print result
-sentinels = {'message': ['foo', 'NA'], 'something': ['two']}
-# print pd.read_csv('ch06/ex5.csv', na_values=sentinels)
-result = pd.read_csv('ch06/ex6.csv')
-# print result
-# print pd.read_csv('ch06/ex6.csv', nrows=5)
-chunker = pd.read_csv('ch06/ex6.csv', chunksize=1000)
-# print chunker
-tot = pd.Series([])
-for piece in chunker:
-    tot = tot.add(piece['key'].value_counts(), fill_value=0)
-tot = tot.sort_values(ascending=False) # order替换为sort_value
-# print tot[:10]
-data = pd.read_csv('ch06/ex5.csv')
+# print result.unstack()
+# print pd.concat([s1, s2, s3], axis=1, keys=['one', 'two', 'three'])
+df1 = DataFrame(np.arange(6).reshape(3, 2), index=['a', 'b', 'c'], columns=['one', 'two'])
+df2 = DataFrame(5 + np.arange(4).reshape(2, 2), index=['a', 'c'], columns=['three', 'four'])
+# print df1
+# print df2
+# print pd.concat([df1, df2], axis=1, keys=['level1', 'level2'])
+# print pd.concat([df1, df2], axis=1, keys=['level1', 'level2'], names=['upper', 'lower'])
+# print pd.concat({'level1': df1, 'level2': df2}, axis=1)
+df1 = DataFrame(np.random.randn(3, 4), columns=['a', 'b', 'c', 'd'])
+df2 = DataFrame(np.random.randn(2, 3), columns=['b', 'd', 'a'])
+# print df1
+# print df2
+# print pd.concat([df1, df2], ignore_index=True)
+a = Series([np.nan, 2.5, np.nan, 3.5, 4.5, np.nan], index=['f', 'e', 'd', 'c', 'b', 'a'])
+b = Series(np.arange(len(a), dtype=np.float64), index=['f', 'e', 'd', 'c', 'b', 'a'])
+b[-1] = np.nan
+# print a
+# print b
+# print np.where(pd.isnull(a), b, a)
+# print b[:-2].combine_first(a[2:])
+df1 = DataFrame({'a': [1., np.nan, 5., np.nan],
+                 'b': [np.nan, 2., np.nan, 6.],
+                 'c': range(2, 18, 4)})
+df2 = DataFrame({'a': [5., 4., np.nan, 3., 7.],
+                 'b': [np.nan, 3., 4., 6., 8.]})
+# print df1.combine_first(df2)
+# print df2
+# print df1
+data = DataFrame(np.arange(6).reshape((2, 3)),
+                 index=pd.Index(['Ohio', 'Colorado'], name='state'),
+                 columns=pd.Index(['one', 'two', 'three'], name='number'))
 # print data
-# data.to_csv('ch06/out.csv')
-datas = pd.date_range('1/1/2000', periods=7)
-from pandas import Series, np
-ts = Series(np.arange(7), index=datas)
-# ts.to_csv('ch06/tseries.csv')
-# print Series.from_csv('ch06/tseries.csv', parse_dates=True)
-import csv
-f = open('ch06/ex7.csv')
-reader = csv.reader(f)
-# for line in reader:
-    # print line
-lines = list(csv.reader(open('ch06/ex7.csv')))
-header, values = lines[0], lines[1:]
-data_dict = {h: v for h, v in zip(header, zip(*values))}
-# print data_dict
-import json
-obj = """
-{"name": "Wes",
- "palce_lived": ["United States", "Spain", "Germany"],
- "pet": null,
- "siblings": [{"name": "Scott", "age": 25, "pet": "Zuko"},
- {"name": "Katie", "age": 33, "pet": "Cisco"}]
-}
-"""
-result = json.loads(obj)
+result = data.stack()
 # print result
-asjson = json.dumps(result)
-# print asjson
-from pandas import DataFrame
-siblings = DataFrame(result['siblings'], columns=['name', 'age'])
-# print siblings
-from lxml.html import parse
-from urllib2 import urlopen
-parsed = parse(urlopen('https://finance.yahoo.com/q/op?s=AAPL+Options'))
-doc = parsed.getroot()
-links = doc.findall('.//a')
-# print links[15:20]
-link = links[28]
-# print link
-# print link.get('href')
-# print link.text_content()
-urls = [link.get('href') for link in doc.findall('.//a')]
-# print urls
-# print urls[-10:]
-tables = doc.findall('.//table')
-# print tables
-calls = tables[2]
-puts = tables[2]
-rows = calls.findall('.//tr')
-def _unpack(row, kind='td'):
-    elts = row.findall('.//%s' %kind)
-    return [val.text_content() for val in elts]
-# print _unpack(rows[0], kind='th')
-# print _unpack(rows[1], kind='td')
-from pandas.io.parsers import TextParser
-def parse_options_data(table):
-    rows = table.findall('.//tr')
-    header = _unpack(rows[0], kind='th')
-    data = [_unpack(r) for r in rows[1:]]
-    return TextParser(data, names=header).get_chunk()
-call_data = parse_options_data(calls)
-put_data = parse_options_data(puts)
-# print call_data[:10]
-from StringIO import StringIO
-from lxml import objectify
-tag = '<a href="http://www.google.com">Google</a>'
-root = objectify.parse(StringIO(tag)).getroot()
-# print root
-# print root.get('href')
-# print root.text
-frame = pd.read_csv('ch06/ex1.csv')
-# print frame
-# print type(frame)
-# frame.save('ch06/frame_prckle')  # 没有save这个方法了
-# print pd.load('ch06/frame_pickle')
-# store = pd.HDFStore('mydata.h5')
-# print frame
-# store['obj1'] = frame
-# store['obj1_col'] = frame['a']
-# print store # 需安装table库
-# print store['obj1']
-import requests, json
-url = 'https://api.twitter.com/1.1/search/tweets.json?q=python'
-# 需要twitter账号验证 暂未申请
-# resp = requests.get(url)
-# print resp
-# data = json.loads(resp.text)
-# print data.keys()
-# tweet_fields = ['created_at', 'from_user', 'id', 'text']
-# tweets = DataFrame(data['results'], columns=tweet_fields)
-# print tweets
-# print tweets.ix[7]
+# print result.unstack()
+# print result.unstack(0)
+# print result.unstack('state')
+s1 = Series([0, 1, 2, 3], index=['a', 'b', 'c', 'd'])
+s2 = Series([4, 5, 6], index=['c', 'd', 'e'])
+data2 = pd.concat([s1, s2], keys=['one', 'two'])
+# print data2.unstack()
+# print data2.unstack().stack()
+# print data2.unstack().stack(dropna=False)
+df = DataFrame({'left': result, 'right': result + 5},
+               columns=pd.Index(['left', 'right'], name='side'))
+# print df
+# print df.unstack('state')
+# print df.unstack('state').stack('side')
+# 将'长格式'旋转为'宽格式' 原始数据未生成,暂未验证
+# print ldata[:10]
+# pivoted = ldata.pivot('data', 'item', 'value')
+# print pivoted.head()
+# pivoted = ldata.pivot('data', 'item')
+# print pivoted[:5]
+# print pivoted['value'][:5]
+# unstackd = ldata.set_index(['date', 'item']).unstack('item')
+# print unstackd[:7]
+data = DataFrame({'k1': ['one'] * 3 + ['two'] * 4,
+                  'k2': [1, 1, 2, 3, 3, 4, 4]})
+# print data
+# print data.duplicated()
+# print data.drop_duplicates()
+data['v1'] = range(7)
+# print data.drop_duplicates(['k1'])
+# print data.drop_duplicates(['k1', 'k2'], keep='last') #keep='last'保留最后一个重复的值
+# print data.drop_duplicates(['k1', 'k2'], keep='first') # take_last替换为keep
+data = DataFrame({'food': ['bacon', 'pulled pork', 'bacon', 'Pastrami',
+                           'corned beef', 'Bacon', 'pastrami', 'heony ham', 'nova lox'],
+                  'ounces': [4, 3, 12, 6, 7.5, 8, 3, 5, 6]})
+# print data
+meat_to_animal = {
+    'bacon': 'pig',
+    'pulled pork': 'pig',
+    'pastrami': 'cow',
+    'corned beef': 'cow',
+    'heony ham': 'pig',
+    'nova lox': 'salmon'
+}
+data['animal'] = data['food'].map(str.lower).map(meat_to_animal)
+# print data
+# print data['food'].map(lambda x: meat_to_animal[x.lower()])
+data = Series([1., -999., 2., -999., -1000, 3.])
+# print data
+# print data.replace(-999, np.nan)
+# print data.replace([-999, -1000], np.nan)
+# print data.replace([-999, -1000], [np.nan, 0])
+# print data.replace({-999: np.nan, -1000: 0})
+data = DataFrame(np.arange(12).reshape((3, 4)),
+                 index=['Ohio', 'Colorado', 'New York'],
+                 columns=['one', 'two', 'three', 'four'])
+# print data.index.map(str.upper)
+data.index = data.index.map(str.upper)
+# print data
+# print data.rename(index=str.title, columns=str.upper)
+# print data.rename(index={'OHIO': 'INDIANA'}, columns={'three': 'peekaboo'})
+_ = data.rename(index={'OHIO': 'INDIANA'}, inplace=True)
+# print data
+ages = [20, 22, 25, 27, 21, 23, 37, 31, 61, 45, 41, 32]
+bins = [18, 25, 35, 60, 100]
+cats = pd.cut(ages, bins)
+# print cats
+# print cats.codes # labels 替换为 codes
+# print cats.levels # levels 未知
+# print pd.value_counts(cats)
+# print pd.cut(ages, [18, 26, 36, 61, 100], right=False)
+group_names = ['Youth', 'YoungAdult', 'MiddleAged', 'Senior']
+# print pd.cut(ages, bins, labels=group_names)
+data = np.random.rand(20)
+# print pd.cut(data, 4, precision=2)
+dara = np.random.randn(1000) # 正态分布
+cats = pd.qcut(data, 4) # 按四分位数进行切割
+# print cats
+# print pd.value_counts(cats)
+# print pd.qcut(data, [0, 0.1, 0.5, 0.9, 1.])
+np.random.seed(12345)
+data = DataFrame(np.random.randn(1000, 4))
+# print data.describe()
+col = data[3]
+# print col[np.abs(col) > 3]
+# print data[(np.abs(data) > 3).any(1)]
+data[np.abs(data) > 3] = np.sign(data) * 3
+# print data.describe()
+df = DataFrame(np.arange(5 * 4).reshape(5, 4))
+sampler = np.random.permutation(5)
+# print sampler
+# print df
+# print df.take(sampler)
+# print df.take(np.random.permutation(len(df))[:3])
+bag = np.array([5, 7, -1, 6, 4])
+sampler = np.random.randint(0, len(bag), size=10)
+# print sampler
+draws =bag.take(sampler)
+# print draws
+df = DataFrame({'key': ['b', 'b', 'a', 'c', 'c', 'b'],
+                'data1': range(6)})
+# print pd.get_dummies(df['key'])
+dummies = pd.get_dummies(df['key'], prefix='key')
+df_with_dummy = df[['data1']].join(dummies)
+# print df_with_dummy
+mnames = ['movie_id', 'title', 'genres']
+movies = pd.read_table('ch02/movielens/movies.dat', sep='::', header=None, names=mnames, engine='python')
+# print movies[:10]
+genre_iter = (set(x.split('|')) for x in movies.genres)
+genres = sorted(set.union(*genre_iter))
+dummies = DataFrame(np.zeros((len(movies), len(genres))), columns=genres)
+for i, gen in enumerate(movies.genres):
+    dummies.ix[i, gen.split('|')] = 1
+movies_windic = movies.join(dummies.add_prefix('Genre_'))
+# print movies_windic.ix[0]
+values = np.random.rand(10)
+# print values
+bins = [0, 0.2, 0.4, 0.6, 0.8, 1]
+# print pd.get_dummies(pd.cut(values, bins))
+val = 'a, b, guido'
+# print val.split(',')
+pieces = [x.strip() for x in val.split(',')]
+# print pieces
+first, second, third = pieces
+# print first + '::' + second + '::' + third
+# print '::'.join(pieces)
+# print 'guido' in val
+# print val.index(',')
+# print val.find(':')
+# print val.count(',')
+# print val.replace(',', '::')
+# print val.replace(',', '')
+import re
+text = 'foo bar\t baz \tqux'
+# print re.split('\s+', text)
+regex = re.compile('\s+')
+# print regex.split(text)
+# print regex.findall(text)
+text = """Dave dave@google.com
+Steve steve@gmail.com
+Rob rob@gmail.com
+Ryan ryan@yahoo.com
+"""
+pattern = r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}'
+# re.IGNORECASE使正则表达式对大小写不敏感
+regex = re.compile(pattern, flags=re.IGNORECASE)
+# print regex.findall(text)
+m = regex.search(text)
+# print m
+# print text[m.start():m.end()]
+# print regex.match(text)
+# print regex.sub('REDACTED', text)
+pattern = r'([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})'
+regex = re.compile(pattern, flags=re.IGNORECASE)
+m = regex.match('wesm@bright.net')
+# print m
+# print m.groups()
+# print regex.findall(text)
+# print regex.sub(r'Username: \1, Domain: \2, Suffix: \3', text)
+regex = re.compile(r"""(?P<username>[A-Z0-9._%+-]+)@(?P<domain>[A-Z0-9.-]+)\.(?P<suffix>[A-Z]{2,4})""",
+                   flags=re.IGNORECASE|re.VERBOSE)
+m = regex.match('wesm@bright.net')
+# print m
+# print m.groupdict()
+data = {'Dave': 'dave@google.com', 'Steve': 'steve@gmail.com',
+        'Rob': 'rob@gmail.com', 'Wes': 'np.nan'}
+data = Series(data)
+# print data
+# print data.isnull()
+# print data.str.contains('gmail')
+# print pattern
+# print data.str.findall(pattern, flags=re.IGNORECASE)
+matches = data.str.match(pattern, flags=re.IGNORECASE)
+# print matches
+# print matches[0]
+# print matches.str.get(1)
+# print matches[0] # Can only use .str accessor with string values, which use np.object_ dtype in pandas
+import json
+db = json.load(open('ch07/foods-2011-10-03.json'))
+# print len(db)
+# print db[0]
+# print db[0]['nutrients'][0]
+nutrients = DataFrame(db[0]['nutrients'])
+# print nutrients[:7]
+info_keys = ['description', 'group', 'id', 'manufacturer']
+info = DataFrame(db, columns=info_keys)
+# print info[:5]
+# print info
+# print pd.value_counts(info.group)[:10]
+nutrients = []
+for rec in db:
+    funts = DataFrame(rec['nutrients'])
+    funts['id'] = rec['id']
+    nutrients.append(funts)
 
-import sqlite3
-query = """
-CREATE TABLE test
-(a VARCHAR(20), b VARCHAR(20),
-c REAL, d INTEGER
-);"""
-con = sqlite3.connect(':memory:')
-con.execute(query)
-con.commit()
-data = [('Atlanta', 'Georgia', 1.25, 6),
-        ('Tallahassee', 'Florida', 2.6, 3),
-        ('Sacramento', 'California', 1.7, 5)]
-stmt = "INSERT INTO test VALUES(?, ?, ?, ?)"
-con.executemany(stmt, data)
-con.commit()
-cursor = con.execute('select * from test')
-rows = cursor.fetchall()
-# print rows
-# print cursor.description
-# print DataFrame(rows, columns=zip(*cursor.description)[0])
-from pandas import read_sql
-# print read_sql('select * from test', con) # pandas.io.sql.read_frame已被read_sql替换
+nutrients = pd.concat(nutrients, ignore_index=True)
+# print nutrients
+# print nutrients.duplicated().sum()
+nutrients = nutrients.drop_duplicates()
+col_mapping = {'description': 'food',
+               'group': 'fgroup'}
+info = info.rename(columns=col_mapping, copy=False)
+# print info
+col_mapping = {'description': 'nutrient',
+               'group': 'nutgroup'}
+nutrients = nutrients.rename(columns=col_mapping, copy=False)
+# print nutrients
+ndata = pd.merge(nutrients, info, on='id', how='outer')
+# print ndata
+# print ndata.ix[30000]
+import matplotlib.pyplot as plt
+result = ndata.groupby(['nutrient', 'fgroup'])['value'].quantile(0.5)
+result['Zinc, Zn'].sort_index().plot(kind='barh')
+# plt.show()
+by_nutrient = ndata.groupby(['nutgroup', 'nutrient'])
+get_maximum = lambda x: x.xs(x.value.idxmax())
+get_minimum = lambda x: x.xs(x.value.idxmin())
+max_foods = by_nutrient.apply(get_maximum)[['value', 'food']]
+max_foods.food = max_foods.food.str[:50]
+# print max_foods.ix['Amino Acids']['food']
