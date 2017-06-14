@@ -1,336 +1,216 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
-import pandas as pd
-from pandas import DataFrame, np, Series
 
-df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
-                'data1': range(7)})
-df2 = DataFrame({'key': ['a', 'b', 'd'],
-                 'data2': range(3)})
-# print df1
-# print df2
-# print pd.merge(df1, df2)
-# print pd.merge(df1, df2, on='key')
-df3 = DataFrame({'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
-                'data1': range(7)})
-df4 = DataFrame({'rkey': ['a', 'b', 'd'],
-                 'data2': range(3)})
-# print pd.merge(df3, df4, left_on='lkey', right_on='rkey')
-# print pd.merge(df1, df2, how='outer')
-df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'b'],
-                 'data1': range(6)})
-df2 = DataFrame({'key': ['a', 'b', 'a', 'b', 'd'],
-                 'data2': range(5)})
-# print df1
-# print df2
-# print pd.merge(df1, df2, on='key', how='left')
-# print pd.merge(df1, df2, how='inner')
-left = DataFrame({'key1': ['foo', 'foo', 'bar'],
-                  'key2': ['one', 'two', 'one'],
-                  'lval': [1, 2, 3]})
-right = DataFrame({'key1': ['foo', 'foo', 'bar', 'bar'],
-                   'key2': ['one', 'one', 'one', 'two'],
-                   'rval': [4, 5, 6, 7]})
-# print pd.merge(left, right, on = ['key1', 'key2'], how='outer')
-# print pd.merge(left, right, on = 'key1')
-# print pd.merge(left, right, on='key1', suffixes=('_left', '_right'), sort=True)
-left1 = DataFrame({'key': ['a', 'b', 'a', 'a', 'b', 'c'],
-                   'value': range(6)})
-right1 = DataFrame({'group_val': [3.5, 7]}, index=['a', 'b'])
-# print left1
-# print right1
-# print pd.merge(left1, right1, left_on='key', right_index=True)
-# print pd.merge(left1, right1, left_on='key', right_index=True, how='outer')
-lefth = DataFrame({'key1': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
-                   'key2': [2000, 2001, 2002, 2001, 2002],
-                   'data': np.arange(5.)})
-righth = DataFrame(np.arange(12).reshape((6, 2)),
-                   index=[['Nevada', 'Nevada', 'Ohio', 'Ohio', 'Ohio', 'Ohio'],
-                          [2001, 2000, 2000, 2000, 2001, 2002]],
-                   columns=['event1', 'event2'])
-# print lefth
-# print righth
-# print pd.merge(lefth, righth, left_on=['key1', 'key2'], right_index=True, sort=True)
-# print pd.merge(lefth, righth, left_on=['key1', 'key2'], right_index=True, how='outer', sort=True)
-left2 = DataFrame([[1., 2.], [3., 4.], [5., 6.]], index=['a', 'c', 'e'], columns=['Ohio', 'Nevada'])
-right2 = DataFrame([[7., 8.], [9., 10.], [11., 12.], [13, 14]], index=['b', 'c', 'd', 'e'], columns=['Missouri', 'Alabama'])
-# print left2
-# print right2
-# print pd.merge(left2, right2, how='outer', left_index=True, right_index=True)
-# print left2.join(right2, how='outer')
-# print left1.join(right1, on='key')
-another = DataFrame([[7., 8.], [9., 10.], [11., 12.], [16., 17.]],
-                    index=['a', 'c', 'e', 'f'], columns=['New York', 'Oregon'])
-# print another
-# print left2.join([right2, another])
-# print left2.join([right2, another], how='outer')
-arr = np.arange(12).reshape((3, 4))
-# print arr
-# print np.concatenate([arr, arr], axis=1)
-s1 = Series([0, 1], index=['a', 'b'])
-s2 = Series([2, 3, 4], index=['c', 'd', 'e'])
-s3 = Series([5, 6], index=['f', 'g'])
-# print pd.concat([s1, s2, s3])
-# print pd.concat([s1, s2, s3], axis=1)
-s4 = pd.concat([s1 * 5, s3])
-# print pd.concat([s1, s4], axis=1)
-# print pd.concat([s1, s4], axis=1, join='inner')
-# print pd.concat([s1, s4], axis=1, join_axes=[['a', 'c', 'b', 'e']])
-result = pd.concat([s1, s1, s3], keys=['one', 'two', 'three'])
-# print result
-# print result.unstack()
-# print pd.concat([s1, s2, s3], axis=1, keys=['one', 'two', 'three'])
-df1 = DataFrame(np.arange(6).reshape(3, 2), index=['a', 'b', 'c'], columns=['one', 'two'])
-df2 = DataFrame(5 + np.arange(4).reshape(2, 2), index=['a', 'c'], columns=['three', 'four'])
-# print df1
-# print df2
-# print pd.concat([df1, df2], axis=1, keys=['level1', 'level2'])
-# print pd.concat([df1, df2], axis=1, keys=['level1', 'level2'], names=['upper', 'lower'])
-# print pd.concat({'level1': df1, 'level2': df2}, axis=1)
-df1 = DataFrame(np.random.randn(3, 4), columns=['a', 'b', 'c', 'd'])
-df2 = DataFrame(np.random.randn(2, 3), columns=['b', 'd', 'a'])
-# print df1
-# print df2
-# print pd.concat([df1, df2], ignore_index=True)
-a = Series([np.nan, 2.5, np.nan, 3.5, 4.5, np.nan], index=['f', 'e', 'd', 'c', 'b', 'a'])
-b = Series(np.arange(len(a), dtype=np.float64), index=['f', 'e', 'd', 'c', 'b', 'a'])
-b[-1] = np.nan
-# print a
-# print b
-# print np.where(pd.isnull(a), b, a)
-# print b[:-2].combine_first(a[2:])
-df1 = DataFrame({'a': [1., np.nan, 5., np.nan],
-                 'b': [np.nan, 2., np.nan, 6.],
-                 'c': range(2, 18, 4)})
-df2 = DataFrame({'a': [5., 4., np.nan, 3., 7.],
-                 'b': [np.nan, 3., 4., 6., 8.]})
-# print df1.combine_first(df2)
-# print df2
-# print df1
-data = DataFrame(np.arange(6).reshape((2, 3)),
-                 index=pd.Index(['Ohio', 'Colorado'], name='state'),
-                 columns=pd.Index(['one', 'two', 'three'], name='number'))
-# print data
-result = data.stack()
-# print result
-# print result.unstack()
-# print result.unstack(0)
-# print result.unstack('state')
-s1 = Series([0, 1, 2, 3], index=['a', 'b', 'c', 'd'])
-s2 = Series([4, 5, 6], index=['c', 'd', 'e'])
-data2 = pd.concat([s1, s2], keys=['one', 'two'])
-# print data2.unstack()
-# print data2.unstack().stack()
-# print data2.unstack().stack(dropna=False)
-df = DataFrame({'left': result, 'right': result + 5},
-               columns=pd.Index(['left', 'right'], name='side'))
-# print df
-# print df.unstack('state')
-# print df.unstack('state').stack('side')
-# 将'长格式'旋转为'宽格式' 原始数据未生成,暂未验证
-# print ldata[:10]
-# pivoted = ldata.pivot('data', 'item', 'value')
-# print pivoted.head()
-# pivoted = ldata.pivot('data', 'item')
-# print pivoted[:5]
-# print pivoted['value'][:5]
-# unstackd = ldata.set_index(['date', 'item']).unstack('item')
-# print unstackd[:7]
-data = DataFrame({'k1': ['one'] * 3 + ['two'] * 4,
-                  'k2': [1, 1, 2, 3, 3, 4, 4]})
-# print data
-# print data.duplicated()
-# print data.drop_duplicates()
-data['v1'] = range(7)
-# print data.drop_duplicates(['k1'])
-# print data.drop_duplicates(['k1', 'k2'], keep='last') #keep='last'保留最后一个重复的值
-# print data.drop_duplicates(['k1', 'k2'], keep='first') # take_last替换为keep
-data = DataFrame({'food': ['bacon', 'pulled pork', 'bacon', 'Pastrami',
-                           'corned beef', 'Bacon', 'pastrami', 'heony ham', 'nova lox'],
-                  'ounces': [4, 3, 12, 6, 7.5, 8, 3, 5, 6]})
-# print data
-meat_to_animal = {
-    'bacon': 'pig',
-    'pulled pork': 'pig',
-    'pastrami': 'cow',
-    'corned beef': 'cow',
-    'heony ham': 'pig',
-    'nova lox': 'salmon'
-}
-data['animal'] = data['food'].map(str.lower).map(meat_to_animal)
-# print data
-# print data['food'].map(lambda x: meat_to_animal[x.lower()])
-data = Series([1., -999., 2., -999., -1000, 3.])
-# print data
-# print data.replace(-999, np.nan)
-# print data.replace([-999, -1000], np.nan)
-# print data.replace([-999, -1000], [np.nan, 0])
-# print data.replace({-999: np.nan, -1000: 0})
-data = DataFrame(np.arange(12).reshape((3, 4)),
-                 index=['Ohio', 'Colorado', 'New York'],
-                 columns=['one', 'two', 'three', 'four'])
-# print data.index.map(str.upper)
-data.index = data.index.map(str.upper)
-# print data
-# print data.rename(index=str.title, columns=str.upper)
-# print data.rename(index={'OHIO': 'INDIANA'}, columns={'three': 'peekaboo'})
-_ = data.rename(index={'OHIO': 'INDIANA'}, inplace=True)
-# print data
-ages = [20, 22, 25, 27, 21, 23, 37, 31, 61, 45, 41, 32]
-bins = [18, 25, 35, 60, 100]
-cats = pd.cut(ages, bins)
-# print cats
-# print cats.codes # labels 替换为 codes
-# print cats.levels # levels 未知
-# print pd.value_counts(cats)
-# print pd.cut(ages, [18, 26, 36, 61, 100], right=False)
-group_names = ['Youth', 'YoungAdult', 'MiddleAged', 'Senior']
-# print pd.cut(ages, bins, labels=group_names)
-data = np.random.rand(20)
-# print pd.cut(data, 4, precision=2)
-dara = np.random.randn(1000) # 正态分布
-cats = pd.qcut(data, 4) # 按四分位数进行切割
-# print cats
-# print pd.value_counts(cats)
-# print pd.qcut(data, [0, 0.1, 0.5, 0.9, 1.])
-np.random.seed(12345)
-data = DataFrame(np.random.randn(1000, 4))
-# print data.describe()
-col = data[3]
-# print col[np.abs(col) > 3]
-# print data[(np.abs(data) > 3).any(1)]
-data[np.abs(data) > 3] = np.sign(data) * 3
-# print data.describe()
-df = DataFrame(np.arange(5 * 4).reshape(5, 4))
-sampler = np.random.permutation(5)
-# print sampler
-# print df
-# print df.take(sampler)
-# print df.take(np.random.permutation(len(df))[:3])
-bag = np.array([5, 7, -1, 6, 4])
-sampler = np.random.randint(0, len(bag), size=10)
-# print sampler
-draws =bag.take(sampler)
-# print draws
-df = DataFrame({'key': ['b', 'b', 'a', 'c', 'c', 'b'],
-                'data1': range(6)})
-# print pd.get_dummies(df['key'])
-dummies = pd.get_dummies(df['key'], prefix='key')
-df_with_dummy = df[['data1']].join(dummies)
-# print df_with_dummy
-mnames = ['movie_id', 'title', 'genres']
-movies = pd.read_table('ch02/movielens/movies.dat', sep='::', header=None, names=mnames, engine='python')
-# print movies[:10]
-genre_iter = (set(x.split('|')) for x in movies.genres)
-genres = sorted(set.union(*genre_iter))
-dummies = DataFrame(np.zeros((len(movies), len(genres))), columns=genres)
-for i, gen in enumerate(movies.genres):
-    dummies.ix[i, gen.split('|')] = 1
-movies_windic = movies.join(dummies.add_prefix('Genre_'))
-# print movies_windic.ix[0]
-values = np.random.rand(10)
-# print values
-bins = [0, 0.2, 0.4, 0.6, 0.8, 1]
-# print pd.get_dummies(pd.cut(values, bins))
-val = 'a, b, guido'
-# print val.split(',')
-pieces = [x.strip() for x in val.split(',')]
-# print pieces
-first, second, third = pieces
-# print first + '::' + second + '::' + third
-# print '::'.join(pieces)
-# print 'guido' in val
-# print val.index(',')
-# print val.find(':')
-# print val.count(',')
-# print val.replace(',', '::')
-# print val.replace(',', '')
-import re
-text = 'foo bar\t baz \tqux'
-# print re.split('\s+', text)
-regex = re.compile('\s+')
-# print regex.split(text)
-# print regex.findall(text)
-text = """Dave dave@google.com
-Steve steve@gmail.com
-Rob rob@gmail.com
-Ryan ryan@yahoo.com
-"""
-pattern = r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}'
-# re.IGNORECASE使正则表达式对大小写不敏感
-regex = re.compile(pattern, flags=re.IGNORECASE)
-# print regex.findall(text)
-m = regex.search(text)
-# print m
-# print text[m.start():m.end()]
-# print regex.match(text)
-# print regex.sub('REDACTED', text)
-pattern = r'([A-Z0-9._%+-]+)@([A-Z0-9.-]+)\.([A-Z]{2,4})'
-regex = re.compile(pattern, flags=re.IGNORECASE)
-m = regex.match('wesm@bright.net')
-# print m
-# print m.groups()
-# print regex.findall(text)
-# print regex.sub(r'Username: \1, Domain: \2, Suffix: \3', text)
-regex = re.compile(r"""(?P<username>[A-Z0-9._%+-]+)@(?P<domain>[A-Z0-9.-]+)\.(?P<suffix>[A-Z]{2,4})""",
-                   flags=re.IGNORECASE|re.VERBOSE)
-m = regex.match('wesm@bright.net')
-# print m
-# print m.groupdict()
-data = {'Dave': 'dave@google.com', 'Steve': 'steve@gmail.com',
-        'Rob': 'rob@gmail.com', 'Wes': 'np.nan'}
-data = Series(data)
-# print data
-# print data.isnull()
-# print data.str.contains('gmail')
-# print pattern
-# print data.str.findall(pattern, flags=re.IGNORECASE)
-matches = data.str.match(pattern, flags=re.IGNORECASE)
-# print matches
-# print matches[0]
-# print matches.str.get(1)
-# print matches[0] # Can only use .str accessor with string values, which use np.object_ dtype in pandas
-import json
-db = json.load(open('ch07/foods-2011-10-03.json'))
-# print len(db)
-# print db[0]
-# print db[0]['nutrients'][0]
-nutrients = DataFrame(db[0]['nutrients'])
-# print nutrients[:7]
-info_keys = ['description', 'group', 'id', 'manufacturer']
-info = DataFrame(db, columns=info_keys)
-# print info[:5]
-# print info
-# print pd.value_counts(info.group)[:10]
-nutrients = []
-for rec in db:
-    funts = DataFrame(rec['nutrients'])
-    funts['id'] = rec['id']
-    nutrients.append(funts)
-
-nutrients = pd.concat(nutrients, ignore_index=True)
-# print nutrients
-# print nutrients.duplicated().sum()
-nutrients = nutrients.drop_duplicates()
-col_mapping = {'description': 'food',
-               'group': 'fgroup'}
-info = info.rename(columns=col_mapping, copy=False)
-# print info
-col_mapping = {'description': 'nutrient',
-               'group': 'nutgroup'}
-nutrients = nutrients.rename(columns=col_mapping, copy=False)
-# print nutrients
-ndata = pd.merge(nutrients, info, on='id', how='outer')
-# print ndata
-# print ndata.ix[30000]
 import matplotlib.pyplot as plt
-result = ndata.groupby(['nutrient', 'fgroup'])['value'].quantile(0.5)
-result['Zinc, Zn'].sort_index().plot(kind='barh')
+
+# fig = plt.figure()
+# ax1 = fig.add_subplot(2, 2, 1)
+# ax2 = fig.add_subplot(2, 2, 2)
+# ax3 = fig.add_subplot(2, 2, 3)
+import pandas as pd
+from numpy.random import randn, np
+# plt.plot(randn(50).cumsum(), 'k--')
+# _ = ax1.hist(randn(100), bins=20, color='k', alpha=0.3)
+# ax2.scatter(np.arange(30), np.arange(30) + 3 * randn(30))
+# fig, axes = plt.subplots(2, 3)
+# print axes
+# subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=None)
 # plt.show()
-by_nutrient = ndata.groupby(['nutgroup', 'nutrient'])
-get_maximum = lambda x: x.xs(x.value.idxmax())
-get_minimum = lambda x: x.xs(x.value.idxmin())
-max_foods = by_nutrient.apply(get_maximum)[['value', 'food']]
-max_foods.food = max_foods.food.str[:50]
-# print max_foods.ix['Amino Acids']['food']
+# fig, axes = plt.subplots(2, 2, sharex=True, sharey=True)
+# for i in range(2):
+    # for j in range(2):
+        # axes[i, j].hist(randn(500), bins=50, color='k', alpha=0.5)
+# plt.subplots_adjust(wspace=0, hspace=0)
+# plt.show()
+# plt.plot(randn(30).cumsum(), 'ko--')
+# plt.plot(randn(30).cumsum(), color='k', linestyle='dashed', marker='o')
+# plt.show()
+data = randn(30).cumsum()
+# plt.plot(data, 'k--', label='Default')
+# plt.plot(data, 'k-', drawstyle='steps-post', label='steps-post')
+# plt.legend(loc='best')
+# plt.show()
+# fig = plt.figure(); ax = fig.add_subplot(1, 1, 1)
+# ax.plot(randn(1000).cumsum())
+# plt.show()
+# ticks = ax.set_xticks([0, 250, 500, 750, 1000])
+# labels = ax.set_xticklabels(['one', 'two', 'three', 'four', 'five'],
+#                             rotation=30, fontsize='small')
+# ax.set_title('My first matplotlib plot')
+# ax.set_xlabel('Stages')
+# ax.plot(randn(1000).cumsum(), 'k', label='one')
+# ax.plot(randn(1000).cumsum(), 'k--', label='two')
+# ax.plot(randn(1000).cumsum(), 'k.', label='three')
+# ax.legend(loc='best')
+# plt.show()
+# ax.text(x, y, 'Hello world!', family='monospace', fontsize=10)
+from datetime import datetime
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
+date = pd.read_csv('ch08/spx.csv', index_col=0, parse_dates=True)
+spx = date['SPX']
+# spx.plot(ax=ax, style='k-')
+crisis_data = [
+    (datetime(2007, 10, 11), 'Peak of bull market'),
+    (datetime(2008, 3, 12), 'Bear Stearns Fails'),
+    (datetime(2008, 9, 15), 'Lehman Bankruptcy'),
+]
+# for date, label in crisis_data:
+#     # print date
+#     # print label
+#     # print spx.asof(date)
+#     # print type(ax)
+#     ax.annotate(label, xy=(date, spx.asof(date) + 50),
+#                 xytext=(date, spx.asof(date) + 200),
+#                 arrowprops=dict(facecolor='black'),
+#                 horizontalalignment='left', verticalalignment='top')
+# ax.set_xlim(['1/1/2007', '1/1/2011'])
+# ax.set_ylim([600, 1800])
+# ax.set_title('Important dates in 2008-2009 financial crisis')
+# plt.show()
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
+# rect = plt.Rectangle((0.2, 0.75), 0.4, 0.15, color='k', alpha=0.3)
+# circ = plt.Circle((0.7, 0.2), 0.15, color='b', alpha=0.3)
+# pgon = plt.Polygon([[0.15, 0.15], [0.35, 0.4], [0.2, 0.6]], color='g', alpha=0.5)
+# ax.add_patch(rect)
+# ax.add_patch(circ)
+# ax.add_patch(pgon)
+# plt.show()
+# plt.savefig('figpath.png', dpi=400)
+# plt.savefig('figpath1.png', dpi=400, bbox_inches='tight')
+# from io import StringIO
+# buffer = StringIO()
+# plt.savefig(buffer)
+# plot_data = buffer.getvalue()
+from pandas import Series, DataFrame
+s = Series(np.random.randn(10).cumsum(), index=np.arange(0, 100, 10))
+# s.plot()
+# plt.show()
+df = DataFrame(np.random.randn(10, 4).cumsum(0),
+               columns=['A', 'B', 'C', 'D'],
+               index=np.arange(0, 100, 10))
+# df.plot()
+# plt.show()
+# fig, axes = plt.subplots(2, 1)
+date = Series(np.random.rand(16), index=list('abcdefghijklmnop'))
+# date.plot(kind='bar', ax=axes[0], color='k', alpha=0.7)
+# date.plot(kind='barh', ax=axes[1], color='k', alpha=0.7)
+df = DataFrame(np.random.rand(6, 4),
+               index=['one', 'two', 'three', 'four', 'five', 'six'],
+               columns=pd.Index(['A', 'B', 'C', 'D'], name='Genus'))
+# print df
+# df.plot(kind='bar')
+# df.plot(kind='barh', stacked=True, alpha=0.5)
+# plt.show()
+tips = pd.read_csv('ch08/tips.csv')
+# print tips.day
+party_counts = pd.crosstab(tips['day'], tips['size'])
+# print party_counts
+party_counts = party_counts.ix[:, 2:5]
+# print party_counts
+party_pcts = party_counts.div(party_counts.sum(1).astype(float), axis=0)
+# print party_pcts
+# party_pcts.plot(kind='bar', stacked=True)
+# plt.show()
+tips['tip_pct'] = tips['tip'] / tips['total_bill']
+# tips['tip_pct'].hist(bins=50)
+# tips['tip_pct'].plot(kind='kde')
+# plt.show()
+comp1 = np.random.normal(0, 1, size=200) # N(0, 1)
+comp2 = np.random.normal(10, 2, size=200) # N(10, 4)
+values = Series(np.concatenate([comp1, comp2]))
+# values.hist(bins=100, alpha=0.3, color='k', normed=True)
+# values.plot(kind='kde', style='k--')
+# plt.show()
+macro = pd.read_csv('ch08/macrodata.csv')
+data = macro[['cpi', 'm1', 'tbilrate', 'unemp']]
+# print date
+# print type(date)
+# print type(np.log(data))
+trans_data = np.log(data).diff().dropna()
+# print trans_data
+# print trans_data[-5:]
+# plt.scatter(trans_data['m1'], trans_data['unemp'])
+# plt.title('Changes in log %s vs. log %s' %('m1', 'unemp'))
+# pd.scatter_matrix(trans_data, diagonal='kde', color='k', alpha=0.3)
+# pd.plotting.scatter_matrix(trans_data, diagonal='kde', color='k', alpha=0.3)# scatter_matrix已被plotting.scatter_matrix替换
+# plt.show()
+data = pd.read_csv('ch08/Haiti.csv')
+# print data
+# print data[['INCIDENT DATE', 'LATITUDE', "LONGITUDE"]][:10]
+# print data['CATEGORY'][:6]
+# print data.describe()
+data = data[(data.LATITUDE > 18) & (data.LATITUDE < 20) & (data.LONGITUDE > -75)
+            & (data.LONGITUDE < -70) & data.CATEGORY.notnull()]
+# print data.describe()
+def to_cat_list(catstr):
+    stripped = (x.strip() for x in catstr.split(','))
+    return [x for x in stripped if x]
+
+def get_all_categories(cat_series):
+    cat_sets = (set(to_cat_list(x)) for x in cat_series)
+    return sorted(set.union(*cat_sets))
+
+def get_english(cat):
+    code, names = cat.split('.')
+    if '|' in names:
+        names = names.split('|')[1]
+    return code, names.strip()
+
+# print get_english('2. Urgences logistiques | Vital Lines')
+all_cats = get_all_categories(data.CATEGORY)
+english_mapping = dict(get_english(x) for x in all_cats)
+# print english_mapping['2a']
+# print english_mapping['6c']
+def get_code(seq):
+    return [x.split('.')[0] for x in seq if x]
+all_codes = get_code(all_cats)
+code_index = pd.Index(np.unique(all_codes))
+dummy_frame = DataFrame(np.zeros((len(data), len(code_index))), index=data.index, columns=code_index)
+# print dummy_frame.ix[:, :6]
+for row, cat in zip(data.index, data.CATEGORY):
+    codes = get_code(to_cat_list(cat))
+    dummy_frame.ix[row, codes] = 1
+
+data = data.join(dummy_frame.add_prefix('category_'))
+# print data.ix[:, 10:15]
+from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
+def basic_haiti_map(ax=None, lllat=17.25, urlat=20.25, lllon=-75, urlon=-71):
+    # 创建极球面投影的Basemap实例
+    m = Basemap(ax=ax, projection='stere',
+                lon_0=(urlon + lllon) / 2,
+                lat_0=(urlat + lllat) / 2,
+                llcrnrlat=lllat, urcrnrlat=urlat,
+                llcrnrlon=lllon, urcrnrlon=urlon,
+                resolution='f')
+    # 绘制海岸线,州界,国界,地图边界
+    m.drawcoastlines()
+    m.drawstates()
+    m.drawcountries()
+    return m
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10))
+fig.subplots_adjust(hspace=0.05, wspace=0.05)
+to_plot = ['2a', '1', '3c', '7a']
+lllat = 17.25; urlat = 20.25; lllon = -75; urlon=-71
+# print data['category_2a']
+# print data[data['category_2a'] == 1]
+# print data[data['category_2a'] == 1].LONGITUDE
+for code, ax in zip(to_plot, axes.flat):
+    m = basic_haiti_map(ax, lllat=lllat, urlat=urlat, lllon=lllon, urlon=urlon)
+    # print m
+    cat_data = data[data['category_%s' % code] == 1]
+    # print cat_data.LONGITUDE
+
+    # 计算地图投影坐标
+    x, y = m(cat_data.LONGITUDE.values, cat_data.LATITUDE.values)
+    # This is resolved by changing m(cat_data.LONGITUDE, cat_data.LATITUDE) to m(cat_data.LONGITUDE.values, cat_data.LATITUDE.values)
+    # print x
+    # m.plot(x, y, 'k.', alpha=0.5)
+    ax.set_title('%s: %s' %(code, english_mapping[code]))
+    # plt.show()
+# plt.show()
+shapefile_path = 'ch08/PortAuPrince_Roads/PortAuPrince_Roads'
+m.readshapefile(shapefile_path, 'roads')
