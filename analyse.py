@@ -1,245 +1,296 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
+
+from datetime import datetime, timedelta
+
 import pandas as pd
-from pandas import DataFrame, np, Series
 
-df = DataFrame({'key1' : ['a', 'a', 'b', 'b', 'a'],
-                'key2' : ['one', 'two', 'one', 'two', 'one'],
-                'data1' : np.random.randn(5),
-                'data2' : np.random.randn(5)})
-# print df
-grouped = df['data1'].groupby(df['key1'])
-# print grouped
+now = datetime.now()
+# print now
+# print now.year, now.month, now.day
+delta = datetime(2011, 1, 7) - datetime(2008, 6, 24, 8, 15)
+# print delta
+# print delta.days
+# print delta.seconds
+start = datetime(2011, 1, 7)
+# print start + timedelta(12)
+# print start - 2 * timedelta(12)
+stamp = datetime(2011, 1, 3)
+# print str(stamp)
+# print stamp.strftime('%Y-%m-%d')
+value = '2011-01-03'
+# print datetime.strptime(value, '%Y-%m-%d')
+datestrs = ['7/6/2011', '8/6/2011']
+# print [datetime.strptime(x, '%m/%d/%Y') for x in datestrs]
+from dateutil.parser import parse
+# print parse('2011-01-03')
+# print parse('Jan 31, 1997 10:45 PM')
+# print parse('6/12/2011', dayfirst=True)
+# print datestrs
+# print pd.to_datetime(datestrs)
+idx = pd.to_datetime(datestrs + [None])
+# print idx
+# print idx[2]
+# print pd.isnull(idx)
+dates = [datetime(2011, 1, 2), datetime(2011, 1, 5), datetime(2011, 1, 7), datetime(2011, 1, 8), datetime(2011, 1, 10), datetime(2011, 1, 12), ]
+ts = pd.Series(pd.np.random.randn(6), index=dates)
+# print ts
+# print type(ts)
+# print ts.index
+# print ts + ts[::2]
+# print ts.index.dtype
+stamp = ts.index[0]
+# print stamp
+stamp = ts.index[2]
+# print ts[stamp]
+# print ts['1/10/2011']
+# print ts['20110110']
+from pandas import Series, np, DataFrame
+
+longer_ts = Series(np.random.randn(1000), index=pd.date_range('1/1/2000', periods=1000))
+# print longer_ts
+# print longer_ts['2001']
+# print longer_ts['2001-05']
+# print ts[datetime(2011, 1, 7):]
+# print ts
+# print ts['1/6/2011':'1/11/2011']
+# print ts.truncate(after='1/9/2011')
+dates = pd.date_range('1/1/2000', periods=100, freq='W-WED')
+long_df = DataFrame(np.random.randn(100, 4),
+                    index=dates,
+                    columns=['Colorado', 'Texas', 'New York', 'Ohio'])
+# print long_df.ix['5-2001']
+dates = pd.DatetimeIndex(['1/1/2000', '1/2/2000', '1/2/2000', '1/2/2000', '1/3/2000'])
+dup_ts = Series(np.arange(5), index=dates)
+# print dup_ts
+# print dup_ts.index.is_unique
+# print dup_ts['1/3/2000']
+# print dup_ts['1/2/2000']
+grouped = dup_ts.groupby(level=0)
 # print grouped.mean()
-means = df['data1'].groupby([df['key1'], df['key2']]).mean()
-# print means
-# print means.unstack()
-states = np.array(['Ohio', 'California', 'California', 'Ohio', 'Ohio'])
-years = np.array([2005, 2005, 2006, 2005, 2006])
-# print df['data1'].groupby([states, years]).mean()
-# print df.groupby('key1').mean()
-# print df.groupby(['key1', 'key2']).mean()
-# print df.groupby(['key1', 'key2']).size()
-# for name, group in df.groupby('key1'):
-#     print name
-#     print group
-# for (k1, k2), group in df.groupby(['key1', 'key2']):
-#     print k1, k2
-#     print group
-pieces = dict(list(df.groupby('key1')))
-# print pieces['b']
-# print df.dtypes
-grouped = df.groupby(df.dtypes, axis=1)
-# print dict(list(grouped))
-# print df.groupby(['key1', 'key2'])[['data2']].mean()
-s_grouped = df.groupby(['key1', 'key2'])['data2']
-# print s_grouped
-# print s_grouped.mean()
-people = DataFrame(np.random.randn(5, 5),
-                   columns=['a', 'b', 'c', 'd', 'e'],
-                   index=['Joe', 'Steve', 'Wes', 'Jim', 'Travis'])
-people.ix[2:3, ['b', 'c']] = np.nan
-# print people
-mapping = {'a': 'red', 'b': 'red', 'c': 'blue',
-           'd': 'blue', 'e': 'red', 'f': 'orange'}
-by_column = people.groupby(mapping, axis=1)
-# print by_column.sum()
-map_series = Series(mapping)
-# print map_series
-# print people.groupby(map_series, axis=1).count()
-# print people.groupby(len).sum()
-key_list = ['one', 'one', 'one', 'two', 'two']
-# print people.groupby([len, key_list]).min()
-columns = pd.MultiIndex.from_arrays([['US', 'US', 'US', 'JP', 'JP'],
-                                     [1, 3, 5, 1, 3]], names=['cty', 'tenor'])
-hier_df = DataFrame(np.random.randn(4, 5), columns=columns)
-# print hier_df
-# print hier_df.groupby(level='cty', axis=1).count()
-# print df
-grouped = df.groupby('key1')
-# print grouped['data1'].quantile(0.9)
-def peak_to_peak(arr):
-    return arr.max() - arr.min()
-# print grouped.agg(peak_to_peak)
-# print grouped.describe()
-tips = pd.read_csv('ch08/tips.csv')
-tips['tip_pct'] = tips['tip'] / tips['total_bill']
-# print tips[:6]
-grouped = tips.groupby(['sex', 'smoker'])
-grouped_pct = grouped['tip_pct']
-# print grouped_pct.agg('mean')
-# print grouped_pct.agg(['mean', 'std', peak_to_peak])
-# print grouped_pct.agg([('foo', 'mean'),( 'bar', np.std)])
-functions = ['count', 'mean', 'max']
-result = grouped['tip_pct', 'total_bill'].agg(functions)
-# print result
-# print result['tip_pct']
-ftuples = [('Durchschnitt', 'mean'), ('Abweichung', np.var)]
-# print grouped['tip_pct', 'total_bill'].agg(ftuples)
-# print grouped.agg({'tip': np.max, 'size' : 'sum'})
-# print grouped.agg({'tip': ['min', 'max', 'mean', 'std'], 'size' : 'sum'})
-# print tips.groupby(['sex', 'smoker'], as_index=False).mean()
-# print df
-k1_means = df.groupby('key1').mean().add_prefix('mean_')
-# print k1_means
-# print pd.merge(df, k1_means, left_on='key1', right_index=True)
-key = ['one', 'two', 'one', 'two', 'one']
-# print people.groupby(key).mean()
-# print people.groupby(key).transform(np.mean)
-def demean(arr):
-    return arr - arr.mean()
-demeaned = people.groupby(key).transform(demean)
-# print demeaned
-# print demeaned.groupby(key).mean()
-def top(df, n=5, column='tip_pct'):
-    return df.sort_values(by=column)[-n:]
-# print top(tips, n=6)
-# print tips.groupby('smoker').apply(top)
-# print tips.groupby(['smoker', 'day']).apply(top, n=1, column='total_bill')
-result = tips.groupby('smoker')['tip_pct'].describe()
-# print result
-# print result.unstack('smoker')
-# print tips.groupby('smoker', group_keys=False).apply(top)
-frame = DataFrame({'data1': np.random.randn(1000),
-                   'data2': np.random.randn(1000)})
-factor = pd.cut(frame.data1, 4)
-# print factor[:10]
-def get_stats(group):
-    return {'min': group.min(), 'max': group.max(),
-            'count': group.count, 'mean': group.mean()}
-grouped = frame.data2.groupby(factor)
-# print grouped.apply(get_stats).unstack()
-grouping = pd.qcut(frame.data1, 10, labels=False)
-grouped = frame.data2.groupby(grouping)
-# print grouped.apply(get_stats).unstack()
-states = ['Ohio', 'New York', 'Vermont', 'Florida',
-          'Oregon', 'Nevada', 'California', 'Idaho']
-group_key = ['East'] * 4 + ['West'] * 4
-data = Series(np.random.randn(8), index=states)
-data[['Vermont', 'Nevada', 'Idaho']] = np.nan
-# print data
-# print data.groupby(group_key).mean()
-fill_mean = lambda g: g.fillna(g.mean())
-# print data.groupby(group_key).apply(fill_mean)
-fill_values = {'East': 0.5, 'West': -1}
-fill_func = lambda g: g.fillna(fill_values[g.name])
-# print data.groupby(group_key).apply(fill_func)
-# 红桃(Hearts), 黑桃(Spades), 梅花(Clubs), 方片(DIamonds)
-suits = ['H', 'S', 'C', 'D']
-card_val = (range(1, 11) + [10]* 3) * 4
-base_names = ['A'] + range(2, 11) + ['J', 'K', 'Q']
-cards = []
-for suit in ['H', 'S', 'C', 'D']:
-    cards.extend(str(num) + suit for num in base_names)
-deck = Series(card_val, index=cards)
-# print deck[:13]
-def draw(deck, n=5):
-    return deck.take(np.random.permutation(len(deck))[:n])
-# print draw(deck)
-get_suit = lambda card: card[-1]
-# print deck.groupby(get_suit).apply(draw, n=2)
-# print deck.groupby(get_suit, group_keys=False).apply(draw, n=2)
-df = DataFrame({'category': ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
-                'data': np.random.randn(8),
-                'weights': np.random.rand(8)})
-# print df
-grouped = df.groupby('category')
-get_wavg = lambda g: np.average(g['data'], weights=g['weights'])
-# print grouped.apply(get_wavg)
-close_px = pd.read_csv('ch09/stock_px.csv', parse_dates=True, index_col=0)
+# print grouped.count()
+# print ts
+# print ts.resample('D')
+index = pd.date_range('4/1/2012', '6/1/2012')
+# print index
+# print pd.date_range(start='4/1/2012', periods=20)
+# print pd.date_range(end='4/1/2012', periods=20)
+# print pd.date_range('1/1/2000', '12/1/2000', freq='BM')
+# print pd.date_range('5/2/2012 12:56:31', periods=5)
+# print pd.date_range('5/2/2012 12:56:31', periods=5, normalize=True)
+from pandas.tseries.offsets import Hour, Minute
+hour = Hour()
+# print hour
+four_hours = Hour(4)
+# print four_hours
+# print pd.date_range('1/1/2000', '1/3/2000 23:59', freq='4h')
+# print Hour(2) + Minute(30)
+# print pd.date_range('1/1/2000', periods=10, freq='1h30min')
+rng = pd.date_range('1/1/2012', '9/1/2012', freq='WOM-3FRI')
+# print list(rng)
+ts = Series(np.random.randn(4), index=pd.date_range('1/1/2000', periods=4, freq='M'))
+# print ts
+# print ts.shift(2)
+# print ts.shift(-2)
+# print ts.shift(2, freq='M')
+# print ts.shift(3, freq='D')
+# print ts.shift(1, freq='3D')
+# print ts.shift(1, freq='90T')
+from pandas.tseries.offsets import Day, MonthEnd
+now = datetime(2011, 11, 17)
+# print now + 3 * Day()
+# print now + MonthEnd()
+# print now + MonthEnd(2)
+offset = MonthEnd()
+# print offset.rollforward(now)
+# print offset.rollback(now)
+ts = Series(np.random.randn(20), index=pd.date_range('1/15/2000', periods=20, freq='4d'))
+# print ts.groupby(offset.rollforward).mean()
+# print ts.resample('M').mean()
+import pytz
+# print pytz.common_timezones[-5:]
+tz = pytz.timezone('US/Eastern')
+# print tz
+rng = pd.date_range('3/9/2012 9:30', periods=6, freq='D')
+ts = Series(np.random.randn(len(rng)), index=rng)
+# print ts.index.tz
+# print pd.date_range('3/9/2012 9:30', periods=10, freq='D', tz='UTC')
+# print pd.date_range('3/9/2012 9:30', periods=10, freq='D', tz='US/Eastern')
+ts_utc = ts.tz_localize('UTC')
+# print ts_utc
+# print ts_utc.index
+# print ts_utc.tz_convert('US/Eastern')
+ts_eastern = ts.tz_localize('US/Eastern')
+# print ts_eastern.tz_convert('UTC')
+# print ts_eastern.tz_convert('Europe/Berlin')
+# print ts.index.tz_localize('Asia/Shanghai')
+stamp = pd.Timestamp('2011-03-12 04:00')
+stamp_utc = stamp.tz_localize('utc')
+# print stamp_utc.tz_convert('US/Eastern')
+stamp = pd.Timestamp('2011-03-12 04:00')
+stamp_utc = stamp.tz_localize('utc')
+# print stamp_utc.tz_convert('US/Eastern')
+stamp_moscow = pd.Timestamp('2011-03-12 04:00', tz='Europe/Moscow')
+# print stamp_moscow
+# print stamp_utc.value
+# print stamp_utc.tz_convert('US/Eastern').value
+stamp = pd.Timestamp('2012-03-12 01:30', tz='US/Eastern')
+# print stamp
+# print stamp + Hour()
+stamp = pd.Timestamp('2012-11-04 00:30', tz='US/Eastern')
+# print stamp
+# print stamp + 2 * Hour()
+rng = pd.date_range('3/7/2012 9:30', periods=10, freq='B')
+ts = Series(np.random.randn(len(rng)), index=rng)
+# print ts
+ts1 = ts[:7].tz_localize('Europe/London')
+ts2 = ts1[2:].tz_convert('Europe/Moscow')
+result = ts1 + ts2
+# print result.index
+p = pd.Period(2007, freq='A-DEC')
+# print p
+# print p + 5
+# print p - 2
+# print pd.Period('2014', freq='A-DEC') - p
+rng = pd.period_range('1/1/2000', '6/30/2000', freq='M')
+# print rng
+# print Series(np.random.randn(6), index=rng)
+values = ['2001Q3', '2002Q2', '2003Q1']
+index = pd.PeriodIndex(values, freq='Q-DEC')
+# print index
+p = pd.Period('2007', freq='A-DEC')
+# print p.asfreq('M', how='start')
+# print p.asfreq('M', how='end')
+p = pd.Period('2007', freq='A-JUN')
+# print p.asfreq('M', 'start')
+# print p.asfreq('M', 'end')
+p = pd.Period('2007-08', 'M')
+# print p.asfreq('A-JUN')
+rng = pd.period_range('2006', '2009', freq='A-DEC')
+ts = Series(np.random.randn(len(rng)), index=rng)
+# print ts
+# print ts.asfreq('M', how='start')
+# print ts.asfreq('B', how='end')
+p = pd.Period('2012Q4', freq='Q-JAN')
+# print p
+# print p.asfreq('D', 'start')
+# print p.asfreq('D', 'end')
+p4pm = (p.asfreq('B', 'e') - 1).asfreq('T', 's') + 16 * 60
+# print p4pm
+# print p4pm.to_timestamp()
+rng = pd.period_range('2011Q3', '2012Q4', freq='Q-JAN')
+ts = Series(np.arange(len(rng)), index=rng)
+# print ts
+new_rng = (rng.asfreq('B', 'e') - 1).asfreq('T', 's') + 16 * 60
+ts.index = new_rng.to_timestamp()
+# print ts
+rng = pd.date_range('1/1/2000', periods=3, freq='M')
+ts = Series(np.random.randn(3), index=rng)
+pts = ts.to_period()
+# print ts
+# print pts
+rng = pd.date_range('1/29/2000', periods=6, freq='D')
+ts2 = Series(np.random.randn(6), index=rng)
+# print ts2.to_period('M')
+pts = ts.to_period()
+# print pts
+# print pts.to_timestamp(how='end')
+data = pd.read_csv('ch08/macrodata.csv')
+# print data.year
+# print data.quarter
+index = pd.PeriodIndex(year=data.year, quarter=data.quarter, freq='Q-DEC')
+# print index
+data.index = index
+# print data.infl
+rng = pd.date_range('1/1/2000', periods=100, freq='D')
+ts = Series(np.random.randn(len(rng)), index=rng)
+# print ts.resample('M', how='mean')
+# print ts.resample('M', how='mean', kind='period')
+rng = pd.date_range('1/1/2000', periods=12, freq='T')
+ts = Series(np.arange(12), index=rng)
+# print ts
+# print ts.resample('5min', how='sum')
+# print ts.resample('5min', closed='right').sum()
+# print ts.resample('5min', closed='left', label='left').sum()
+# print ts.resample('5min', loffset='-1s', closed='left', label='left').sum()
+# print ts.resample('5min', closed='left').ohlc()
+rng = pd.date_range('1/1/2000', periods=100, freq='D')
+ts = Series(np.arange(100), index=rng)
+# print ts.groupby(lambda x: x.month).mean()
+# print ts.groupby(lambda x: x.weekday).mean()
+frame = DataFrame(np.random.randn(2, 4),
+                  index=pd.date_range('1/1/2000', periods=2, freq='W-WED'),
+                  columns=['Colorado', 'Texas', 'New York', 'Ohio'])
+# print frame[:5]
+df_daily = frame.resample('D')
+# print df_daily
+# print frame.resample('D').ffill()
+# print frame.resample('D', limit=2).ffill()
+frame = DataFrame(np.random.randn(23, 4),
+                  index=pd.date_range('1-2000', '12-2001', freq='M'),
+                  columns=['Colorado', 'Texas', 'New York', 'Ohio'])
+# print frame
+# print frame[:5]
+# annual_frame = frame.resample('A-DEC', how='mean')
+annual_frame = frame.resample('A-DEC').mean()
+# print annual_frame
+# print annual_frame.resample('Q-DEC').ffill()
+# print annual_frame.resample('Q-MAR').ffill()
+# print annual_frame.resample('Q-DEC', convention='start').ffill()
+close_px_all = pd.read_csv('ch09/stock_px.csv', parse_dates=True, index_col=0)
+close_px = close_px_all[['AAPL', 'MSFT', 'XOM']]
+close_px = close_px.resample('B').ffill()
 # print close_px
-# print close_px[-4:]
-rets = close_px.pct_change().dropna()
-spx_corr = lambda x: x.corrwith(x['SPX'])
-by_year = rets.groupby(lambda x: x.year)
-# print by_year.apply(spx_corr)
-# print by_year.apply(lambda g: g['AAPL'].corr(g['MSFT']))
-# import statsmodels.api as sm
-# def regress(data, yvar, xvars):
-#     Y = data[yvar]
-#     X = data[xvars]
-#     X['intercept'] = 1.
-#     result = sm.OLS(Y, X).fit()
-#     return result.params
-# print by_year.apply(regress, 'AAPL', ['SPX'])
-# print tips.pivot_table(['tip_pct', 'size'], index=['sex', 'day'],
-#                        columns='smoker', margins=True)
-# print tips.pivot_table('tip_pct', index=['sex', 'smoker'], columns='day', aggfunc=len, margins=True)
-# print tips.pivot_table('size', index=['time', 'sex', 'smoker'], columns='day', aggfunc='sum', fill_value=0)
-fec = pd.read_csv('ch09/P00000001-ALL.csv', low_memory=False)
-# print fec
-# print fec.ix[123456]
-unique_cands = fec.cand_nm.unique()
-# print unique_cands
-parties = {'Bachmann, Michelle': 'Republican',
-           'Romney, Mitt': 'Republican',
-           'Obama, Barack': 'Democrat',
-           "Roemer, Charles E. 'Buddy' III": 'Republican',
-           'Pawlenty, Timothy': 'Republican',
-           'Johnson, Gary Earl': 'Republican',
-           'Paul, Ron': 'Republican',
-           'Santorum, Rick': 'Republican',
-           'Cain, Herman': 'Republican',
-           'Gingrich, Newt': 'Republican',
-           'McCotter, Thaddeus G': 'Republican',
-           'Huntsman, Jon': 'Republican',
-           'Perry, Rick': 'Republican'}
-# print fec.cand_nm[123456:123461]
-# print fec.cand_nm[123456:123461].map(parties)
-fec['party'] = fec.cand_nm.map(parties)
-# print fec['party'].value_counts()
-# print (fec.contb_receipt_amt > 0).value_counts()
-fec = fec[fec.contb_receipt_amt > 0]
-fec_mrbo = fec[fec.cand_nm.isin(['Obama, Barack', 'Romney, Mitt'])]
-# print fec.contbr_occupation.value_counts()[:10]
-occ_mapping = {
-   'INFORMATION REQUESTED PER BEST EFFORTS' : 'NOT PROVIDED',
-   'INFORMATION REQUESTED' : 'NOT PROVIDED',
-   'INFORMATION REQUESTED (BEST EFFORTS)' : 'NOT PROVIDED',
-   'C.E.O.': 'CEO'
-}
-# If no mapping provided, return x
-f = lambda x: occ_mapping.get(x, x)
-fec.contbr_occupation = fec.contbr_occupation.map(f)
-emp_mapping = {
-   'INFORMATION REQUESTED PER BEST EFFORTS' : 'NOT PROVIDED',
-   'INFORMATION REQUESTED' : 'NOT PROVIDED',
-   'SELF' : 'SELF-EMPLOYED',
-   'SELF EMPLOYED' : 'SELF-EMPLOYED',
-}
-
-# If no mapping provided, return x
-f = lambda x: emp_mapping.get(x, x)
-fec.contbr_employer = fec.contbr_employer.map(f)
-by_occupation = fec.pivot_table('contb_receipt_amt',
-                                index='contbr_occupation',
-                                columns='party', aggfunc='sum')
-over_2mm = by_occupation[by_occupation.sum(1) > 2000000]
-# print over_2mm
-# over_2mm.plot(kind='barh')
+# close_px['AAPL'].plot()
+# close_px.ix['2009'].plot()
+# close_px['AAPL'].ix['01-2011': '03-2011'].plot()
+appl_q = close_px['AAPL'].resample('Q-DEC').ffill()
+# appl_q.ix['2009':].plot()
+# close_px.AAPL.plot()
+# pd.rolling_mean(close_px.AAPL, 250).plot()
 import matplotlib.pyplot as plt
 # plt.show()
-def get_top_amounts(group, key, n=5):
-    totals = group.groupby(key)['contb_receipt_amt'].sum()
-    return totals.sort_values(ascending=False)[n:]
-grouped = fec_mrbo.groupby('cand_nm')
-# print grouped.apply(get_top_amounts, 'contbr_occupation', n=7)
-# print grouped.apply(get_top_amounts, 'contbr_employer', n=10)
-bins = np.array([0, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000])
-labels = pd.cut(fec_mrbo.contb_receipt_amt, bins)
-# print labels
-grouped = fec_mrbo.groupby(['cand_nm', labels])
-# print grouped.size().unstack(0)
-bucket_sums = grouped.contb_receipt_amt.sum().unstack(0)
-# print bucket_sums
-normed_sums = bucket_sums.div(bucket_sums.sum(axis=1), axis=0)
-# print normed_sums
-# normed_sums[:-2].plot(kind='barh', stacked=True)
+appl_std250 = close_px.AAPL.rolling(min_periods=10,window=250,center=False).std()
+# print appl_std250[5:12]
+# appl_std250.plot()
 # plt.show()
-grouped = fec_mrbo.groupby(['cand_nm', 'contbr_st'])
-totals = grouped.contb_receipt_amt.sum().unstack(0).fillna(0)
-totals = totals[totals.sum(1) > 100000]
-# print totals[:10]
-percent = totals.div(totals.sum(1), axis=0)
-# print percent[:10]
+expanding_mean = lambda x: pd.rolling_mean(x, len(x), min_periods=1)
+# pd.rolling_mean(close_px, 60).plot(logy=True)
+# close_px.rolling(window=60, center=False).mean().plot(logy=True)
+# plt.show()
+# fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(12, 7))
+aapl_px = close_px.AAPL['2005':'2009']
+# ma60 = pd.rolling_mean(aapl_px, 60, min_periods=50)
+ma60 = aapl_px.rolling(min_periods=50,window=60,center=False).mean()
+# ewma60 = pd.ewma(aapl_px, span=60)
+ewma60 = aapl_px.ewm(ignore_na=False,span=60,min_periods=0,adjust=True).mean()
+# aapl_px.plot(style='k-', ax=axes[0])
+# ma60.plot(style='k--', ax=axes[0])
+# aapl_px.plot(style='k-', ax=axes[1])
+# ewma60.plot(style='k--', ax=axes[1])
+# axes[0].set_title('Simple MA')
+# axes[1].set_title('Exponentially-weighted MA')
+# plt.show()
+spx_px = close_px_all['SPX']
+spx_rets = spx_px / spx_px.shift(1) - 1
+returns = close_px.pct_change()
+# corr = pd.rolling_corr(returns.AAPL, spx_rets, 125, min_periods=100)
+# corr = pd.rolling_corr(returns, spx_rets, 125, min_periods=100)
+# corr.plot()
+# plt.show()
+from scipy.stats import percentileofscore
+score_at_2percent = lambda x: percentileofscore(x, 0.02)
+result = pd.rolling_apply(returns.AAPL, 250, score_at_2percent)
+# result.plot()
+# plt.show()
+rng = pd.date_range('1/1/2000', periods=10000000, freq='10ms')
+ts = Series(np.random.randn(len(rng)), index=rng)
+# print ts
+# print ts.resample('15min').ohlc()
+%timeit ts.resample('15min').ohlc()
+rng = pd.date_range('1/1/2000', periods=10000000, freq='1s')
+ts = Series(np.random.randn(len(rng)), index=rng)
+print ts
+%timeit ts.resample('15s').ohlc()
+
