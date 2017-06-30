@@ -1,144 +1,239 @@
 #!/usr/bin/env python 2.7.12
 #coding=utf-8
 #author=yexiaozhu
-import pandas
-import pandas as pd
 import numpy as np
-from pandas import Series, DataFrame
+from pandas import Series
 
-# names = ['date', 'AA', 'AAPL', 'GE', 'IBM', 'JNJ', 'MSFT', 'PEP', 'SPX', 'XOM']
-# prices_data = pd.read_csv('ch11/stock_px.csv', skiprows=1, header=None, names=names)
-# # print prices_data[:5]
-# prices = prices_data[['date', 'AAPL', 'JNJ', 'SPX', 'XOM']]
-# # print prices[prices['date'] > '2011-09-06']
-# # print prices[prices['date'] < '2011-09-15']
-# prices = prices[(prices['date'] > '2011-09-06')&(prices['date'] < '2011-09-15')]
-# print prices
-# # print type(prices)
-# volumes_data = pd.read_csv('ch11/volume.csv',  skiprows=1, header=None, names=names)
-# # print volumes_data[:5]
-# volumes = volumes_data[['date', 'AAPL', 'JNJ', 'XOM']]
-# # print volumes[volumes['date'] > '2011-09-06']
-# # print volumes[volumes['date'] < '2011-09-13']
-# volume = volumes[(volumes['date'] > '2011-09-06')&(volumes['date'] < '2011-09-13')]
-# print volume
-# print volume[0:1]
-#
-# # print type(volume)
-# print prices * volume
-prices_data = pd.read_csv('ch11/stock_px.csv', index_col=0)
-prices = prices_data.ix[[5443,5444,5445,5446,5447,5448,5449],['AAPL', 'JNJ', 'SPX', 'XOM']]
-# print prices
-volume_data = pd.read_csv('ch11/volume.csv', index_col=0)
-volume = volume_data.ix[[5443,5444,5445,5446,5447],['AAPL', 'JNJ', 'XOM']]
-# print volume
-# print prices * volume
-vwap = (prices * volume).sum() / volume.sum()
-# print vwap
-# print vwap.dropna()
-# print prices.align(volume, join='inner')
-s1 = Series(range(3), index=['a', 'b', 'c'])
-s2 = Series(range(4), index=['d', 'b', 'c', 'e'])
-s3 = Series(range(3), index=['f', 'a', 'c'])
-# print DataFrame({'one': s1, 'two': s2, 'three': s3})
-# print DataFrame({'one': s1, 'two': s2, 'three': s3}, index=list('face'))
-ts1 = Series(np.random.randn(3), index=pd.date_range('2012-6-13', periods=3, freq='W-WED'))
-# print ts1
-# print ts1.resample('B')
-# print ts1.resample('B').ffill()
-dates = pd.DatetimeIndex(['2012-6-12', '2012-6-17', '2012-6-18',
-                          '2012-6-21', '2012-6-22', '2012-6-29'])
-ts2 = Series(np.random.randn(6), index=dates)
-# print ts2
-# print ts1.reindex(ts2.index).ffill()
-# print ts2 + ts1.reindex(ts2.index).ffill()
-gdp = Series([1.78, 1.94, 2.08, 2.01, 2.05, 2.31, 2.46],
-             index=pd.period_range('1984Q2', periods=7, freq='Q-SEP'))
-infl = Series([0.025, 0.045, 0.037, 0.04],
-              index=pd.period_range('1982', periods=4, freq='A-DEC'))
-# print gdp
-# print infl
-infl_q = infl.asfreq('Q-SEP', how='end')
-# print infl_q
-# print infl_q.reindex(gdp.index).ffill()
-rng = pd.date_range('2012-06-01 09:30', '2012-06-01 15:59', freq='T') # 生成一个交易日内的日期范围和时间序列
-rng = rng.append([rng + pd.offsets.BDay(i) for i in range(1, 4)]) # 生成5天时间点(9:30-15:59的值)
-ts = Series(np.arange(len(rng), dtype=float), index=rng)
-# print ts
-# print type(ts)
-# ts.to_csv('ts.csv')
-from datetime import time
-# print ts[time(10, 0)]
-# print ts.at_time(time(10, 0))
-# print ts.between_time(time(10, 0), time(10, 1))
-# 将该时间序列的大部分内容随机设置为NA
-indexer = np.sort(np.random.permutation(len(ts))[700:])
-irr_ts = ts.copy()
-irr_ts[indexer] = np.nan
-# print irr_ts['2012-06-01 09:50':'2012-06-01 10:00']
-selection = pd.date_range('2012-06-01 10:00', periods=4, freq='B')
-# print irr_ts.asof(selection)
-data1 = DataFrame(np.ones((6, 3), dtype=float),
-                  columns=['a', 'b', 'c'],
-                  index=pd.date_range('6/12/2012', periods=6))
-data2 = DataFrame(np.ones((6, 3), dtype=float) * 2,
-                  columns=['a', 'b', 'c'],
-                  index=pd.date_range('6/13/2012', periods=6))
-spliced = pd.concat([data1.ix[:'2012-06-14'], data2.ix['2012-06-15':]])
-# print spliced
-data2 = DataFrame(np.ones((6, 4), dtype=float) * 2,
-                  columns=['a', 'b', 'c', 'd'],
-                  index=pd.date_range('6/13/2012', periods=6))
-spliced = pd.concat([data1.ix[:'2012-06-14'], data2.ix['2012-06-15':]])
-# print spliced
-spliced_filled = spliced.combine_first(data2)
-# print spliced_filled
-spliced.update(data2, overwrite=False)
-# print spliced
-cp_spliced = spliced.copy()
-cp_spliced[['a', 'c']] = data1[['a', 'c']]
-# print cp_spliced
-import random; random.seed(0)
-import string
-N = 1000
-def rands(n):
-    choices = string.ascii_uppercase
-    return ''.join([random.choice(choices) for _ in xrange(n)])
-tickers = np.array([rands(5) for _ in xrange(N)])
-M = 500
-df = DataFrame({'Momentum' : np.random.randn(M) / 200 + 0.03,
-                'Value' : np.random.randn(M) / 200 + 0.08,
-                'ShortIntrtest' : np.random.randn(M) / 200 - 0.02},
-               index=tickers[:M])
-ind_names = np.array(['FINANCIAL', 'TECH'])
-sampler = np.random.randint(0, len(ind_names), N)
-industries = Series(ind_names[sampler], index=tickers, name='industry')
-by_industry = df.groupby(industries)
-# print by_industry.mean()
-# print by_industry.describe()
-# 行业内标准化处理
-def zsocre(group):
-    return (group - group.mean()) / group.std()
-df_stand = by_industry.apply(zsocre)
-# print df_stand.groupby(industries).agg(['mean', 'std'])
-# 行业内降序排名
-ind_rank = by_industry.rank(ascending=False)
-# print ind_rank.groupby(industries).agg(['min', 'max'])
-# 行业内排名和标准化
-# print by_industry.apply(lambda x: zsocre(x.rank()))
-from numpy.random import rand
-fac1, fac2, fac3 = np.random.rand(3, 1000)
-ticker_subset = tickers.take(np.random.permutation(N)[:1000])
-# 因子加权和以及噪声
-port = Series(0.7 * fac1 - 1.2 * fac2 + 0.3 * fac3 + rand(1000), index=ticker_subset)
-factors = DataFrame({'f1': fac1, 'f2': fac2, 'f3': fac3}, index=ticker_subset)
-# print factors.corrwith(port)
-# print port
-# print factors
-results = pd.stats.ols.MovingOLS(y=port, x=factors).fit()
-print results
-def beta_exposure(chunk, factors=None):
-    return pd.sm.ols(y=chunk, x=factors).beta
-by_ind = port.groupby(industries)
-exposures = by_ind.apply(beta_exposure, factors=factors)
-print exposures.unstack()
+ints = np.ones(10, dtype=np.uint8)
+floats = np.ones(10, dtype=np.float32)
+# print np.issubdtype(ints.dtype, np.integer)
+# print np.issubdtype(floats.dtype, np.floating)
+# print np.float64.mro()
+arr = np.arange(8)
+# print arr
+# print arr.reshape((4, 2))
+# print arr.reshape((4, 2)).reshape((2, 4))
+arr = np.arange(15)
+# print arr.reshape((5, -1))
+other_arr = np.ones((3, 5))
+# print other_arr.shape
+# print arr.reshape(other_arr.shape)
+arr = np.arange(15).reshape((5, 3))
+# print arr
+# print arr.ravel()
+# print arr.flatten()
+arr = np.arange(12).reshape((3, 4))
+# print arr
+# print arr.ravel()
+# print arr.ravel('F')
+arr1 = np.array([[1, 2, 3], [4, 5, 6]])
+arr2 = np.array([[7, 8, 9], [10, 11, 12]])
+# print np.concatenate([arr1, arr2], axis=0)
+# print np.concatenate([arr1, arr2], axis=1)
+# print np.vstack((arr1, arr2))
+# print np.hstack((arr1, arr2))
+from numpy.random import randn
+arr = randn(5, 2)
+# print arr
+first, second, third = np.split(arr, [1, 3])
+# print first
+# print second
+# print third
+arr = np.arange(6)
+arr1 = arr.reshape((3, 2))
+arr2 = randn(3, 2)
+# print np.r_[arr1, arr2]
+# print np.c_[np.r_[arr1, arr2], arr]
+# print np.c_[1:6, -10:-5]
+arr =np.arange(3)
+# print arr.repeat(3)
+# print arr.repeat([2, 3, 4])
+arr = randn(2, 2)
+# print arr
+# print arr.repeat(2, axis=0)
+# print arr.repeat([2, 3], axis=0)
+# print arr.repeat([2, 3], axis=1)
+# print arr
+# print np.tile(arr, 2)
+# print np.tile(arr, (2, 1))
+# print np.tile(arr, (3, 2))
+arr = np.arange(10) * 100
+inds = [7, 1, 2, 6]
+# print arr[inds]
+# print arr.take(inds)
+arr.put(inds, 42)
+# print arr
+arr.put(inds, [40, 41, 42, 43])
+# print arr
+inds = [2, 0, 2, 1]
+arr = randn(2, 4)
+# print arr
+# print arr.take(inds, axis=1)
+arr = randn(1000, 50)
+# 500行随机样本
+inds = np.random.permutation(1000)[:500]
+# print arr[inds]
+# print arr.take(inds, axis=0)
+arr = np.arange(5)
+# print arr
+# print arr * 4
+arr = randn(4, 3)
+# print arr.mean(0)
+demeaned = arr - arr.mean(0)
+# print demeaned
+# print demeaned.mean(0)
+arr = np.arange(16).reshape(4, 4)
+# print arr
+row_means = arr.mean(1)
+# print row_means
+# print row_means.reshape((4, 1))
+demeaned = arr - row_means.reshape((4, 1))
+# print demeaned
+# print demeaned.mean(1)
+arr = np.zeros((4, 4))
+# print arr
+arr_3d = arr[:, np.newaxis, :]
+# print arr_3d
+# print arr_3d.shape
+# arr_1d = np.random.normal(size=3)
+# print arr_1d
+arr_1d = np.arange(3)
+# print arr_1d[:, np.newaxis]
+# print arr_1d[np.newaxis, :]
+arr = randn(3, 4, 5)
+# print arr
+depth_means = arr.mean(2)
+# print depth_means
+demeaned = arr - depth_means[:, :, np.newaxis]
+# print demeaned.mean(2)
+arr = np.zeros((4, 3))
+arr[:] = 5
+# print arr
+col = np.array([1.28, -0.42, 0.44, 1.6])
+arr[:] = col[:, np.newaxis]
+# print arr
+arr[:2] = [[-1.37], [0.509]]
+# print arr
+arr = np.arange(10)
+# print np.add.reduce(arr)
+# print arr.sum()
+arr = randn(5, 5)
+arr[::2].sort(1)
+# print arr
+# print arr[:, :-1] < arr[:, 1:]
+# print np.logical_and.reduce(arr[:, :-1] < arr[:, 1:], axis=1)
+arr = np.arange(15).reshape((3, 5))
+# print np.add.accumulate(arr, axis=1)
+arr = np.arange(3).repeat([1, 2, 3])
+# print arr
+# print np.multiply.outer(arr, np.arange(5))
+result = np.subtract.outer(randn(3, 4), randn(5))
+# print result.shape
+arr = np.arange(10)
+# print np.add.reduceat(arr, [0, 5, 8])
+arr = np.multiply.outer(np.arange(4), np.arange(5))
+# print arr
+# print np.add.reduceat(arr, [0, 2, 4], axis=1)
+def add_elements(x, y):
+    return x + y
+add_them = np.frompyfunc(add_elements, 2, 1)
+# print add_them(np.arange(8), np.arange(8))
+add_them = np.vectorize(add_elements, otypes=[np.float64])
+# print add_them(np.arange(8), np.arange(8))
+# arr = randn(10000)
+dtype = [('x', np.float64), ('y', np.int32)]
+sarr = np.array([(1.5, 6), (np.pi, -2)], dtype=dtype)
+# print sarr
+# print sarr[0]
+# print sarr[0]['y']
+# print sarr['x']
+dtype = [('x', np.int64, 3), ('y', np.int32)]
+arr = np.zeros(4, dtype=dtype)
+# print arr
+# print arr[0]['x']
+# print arr['x']
+dtype = [('x', [('a', 'f8'), ('b', 'f4')]), ('y', np.int32)]
+data = np.array([((1, 2), 5), ((3, 4), 6)], dtype=dtype)
+# print data['x']
+# print data['y']
+# print data['x']['a']
+arr = randn(6)
+arr.sort()
+# print arr
+arr = randn(3, 5)
+# print arr
+arr[:, 0].sort()
+# print arr
+arr = randn(5)
+# print arr
+# print np.sort(arr)
+# print arr
+arr = randn(3, 5)
+# print arr
+arr.sort(axis=1)
+# print arr
+# print arr[:, ::-1]
+values = np.array([5, 0, 1, 3, 2])
+indexer = values.argsort()
+# print indexer
+# print values[indexer]
+arr = randn(3, 5)
+arr[0] = values
+# print arr
+# print arr[:, arr[0].argsort()]
+first_name = np.array(['Bob', 'Jane', 'Steve', 'Bill', 'Barbara'])
+last_name = np.array(['Jones', 'Arnold', 'Arnold', 'Jones', 'Walters'])
+sorter = np.lexsort((first_name, last_name))
+# print zip(last_name[sorter], first_name[sorter])
+values = np.array(['2:first', '2:second', '1:first', '1:second', '1:third'])
+key = np.array([2, 2, 1, 1, 1])
+indexer = key.argsort(kind='mergesort')
+# print indexer
+# print values.take(indexer)
+arr = np.array([0, 1, 7, 12, 15])
+# print arr
+# print arr.searchsorted(9)
+# print arr.searchsorted(4)
+# print arr.searchsorted([0, 8, 11, 16])
+arr = np.array([0, 0, 0, 1, 1, 1, 1])
+# print arr.searchsorted([0, 1])
+# print arr.searchsorted([0, 1], side='right')
+data = np.floor(np.random.uniform(0, 10000, size=50))
+bins = np.array([0, 100, 1000, 5000, 10000])
+# print data
+labels = bins.searchsorted(data)
+# print labels
+# print Series(data).groupby(labels).mean()
+# print np.digitize(data, bins)
+X = np.array([[1, 2, 3, 4],
+              [5, 6, 7, 8],
+              [9, 10, 11, 12],
+              [13, 14, 15, 16]])
+# print X[:, 0] # 一维的
+y = X[:, :1] # 切片操作可产生二维结果
+# print X
+# print y
+# print np.dot(y.T, np.dot(X, y))
+Xm = np.matrix(X)
+ym = Xm[:, 0]
+# print Xm
+# print ym
+# print ym.T * Xm * ym
+# print Xm.I * X #报错numpy.linalg.linalg.LinAlgError: Singular matrix
+mmap = np.memmap('mymmap', dtype='float64', mode='w+', shape=(10000, 10000))
+# print mmap
+section = mmap[:5]
+section[:] = np.random.randn(5, 10000)
+mmap.flush()
+# print mmap
+del mmap
+mmap = np.memmap('mymmap', dtype='float64', shape=(10000, 10000))
+# print mmap
+arr_c = np.ones((1000, 1000), order='C')
+arr_f = np.ones((1000, 1000), order='F')
+# print arr_c.flags
+# print arr_f.flags
+# print arr_f.flags.f_contiguous
+# print arr_f.copy('C').flags
+# print arr_c[:50].flags.contiguous
+# print arr_c[:, :50].flags
